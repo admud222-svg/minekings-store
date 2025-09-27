@@ -1,0 +1,639 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Server Ranks - Kalwi Server</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        :root {
+            --primary: #2ecc71;
+            --secondary: #27ae60;
+            --dark: #2c3e50;
+            --light: #ecf0f1;
+            --white: #ffffff;
+            --gray: #7f8c8d;
+        }
+
+        body {
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            color: var(--white);
+            min-height: 100vh;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Header */
+        header {
+            background: rgba(0,0,0,0.3);
+            backdrop-filter: blur(10px);
+            padding: 20px 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            font-size: 28px;
+            font-weight: bold;
+            color: var(--primary);
+            text-decoration: none;
+        }
+
+        .logo i {
+            margin-right: 10px;
+            font-size: 32px;
+        }
+
+        .back-btn {
+            background: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.2);
+            color: var(--white);
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .back-btn:hover {
+            background: rgba(255,255,255,0.2);
+        }
+
+        /* Ranks Section */
+        .ranks-section {
+            padding: 60px 0;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+
+        .section-header h1 {
+            font-size: 42px;
+            margin-bottom: 10px;
+            color: var(--primary);
+        }
+
+        .section-header p {
+            font-size: 18px;
+            color: var(--gray);
+        }
+
+        .ranks-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+        }
+
+        .rank-card {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 15px;
+            padding: 30px;
+            text-align: center;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .rank-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+        }
+
+        .rank-card:hover {
+            transform: translateY(-10px);
+            background: rgba(255,255,255,0.1);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.3);
+        }
+
+        .rank-icon {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            font-size: 32px;
+            font-weight: bold;
+        }
+
+        .rank-name {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 15px;
+            color: var(--primary);
+        }
+
+        .rank-price {
+            font-size: 28px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            color: var(--white);
+        }
+
+        .rank-features {
+            list-style: none;
+            margin-bottom: 25px;
+            text-align: left;
+        }
+
+        .rank-features li {
+            padding: 8px 0;
+            color: var(--gray);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .rank-features li i {
+            color: var(--primary);
+            font-size: 14px;
+        }
+
+        .buy-rank-btn {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: var(--white);
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .buy-rank-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(46, 204, 113, 0.3);
+        }
+
+        /* Login Required Modal */
+        .login-required {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.9);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+        }
+
+        .login-required-content {
+            background: var(--dark);
+            padding: 40px;
+            border-radius: 15px;
+            text-align: center;
+            max-width: 400px;
+        }
+
+        .login-required-content h3 {
+            color: var(--primary);
+            margin-bottom: 20px;
+        }
+
+        .login-required-content p {
+            margin-bottom: 30px;
+            color: var(--gray);
+        }
+
+        .login-btn {
+            background: var(--primary);
+            color: var(--white);
+            border: none;
+            padding: 12px 30px;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            transition: all 0.3s;
+        }
+
+        .login-btn:hover {
+            background: var(--secondary);
+        }
+
+        /* Contact Selection Modal */
+        .contact-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.9);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+        }
+
+        .contact-modal-content {
+            background: var(--dark);
+            padding: 40px;
+            border-radius: 15px;
+            text-align: center;
+            max-width: 500px;
+            width: 90%;
+        }
+
+        .contact-modal h3 {
+            color: var(--primary);
+            margin-bottom: 20px;
+            font-size: 24px;
+        }
+
+        .contact-modal p {
+            margin-bottom: 30px;
+            color: var(--gray);
+        }
+
+        .contact-options {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .contact-option {
+            background: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.2);
+            border-radius: 10px;
+            padding: 15px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .contact-option:hover {
+            background: rgba(255,255,255,0.2);
+            transform: translateY(-3px);
+        }
+
+        .contact-option i {
+            font-size: 24px;
+            color: var(--primary);
+        }
+
+        .contact-info {
+            text-align: left;
+        }
+
+        .contact-name {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .contact-number {
+            color: var(--gray);
+            font-size: 14px;
+        }
+
+        .cancel-btn {
+            background: rgba(255,255,255,0.1);
+            color: var(--white);
+            border: 1px solid rgba(255,255,255,0.2);
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: bold;
+        }
+
+        .cancel-btn:hover {
+            background: rgba(255,255,255,0.2);
+        }
+
+        /* Notification */
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: var(--primary);
+            color: var(--white);
+            padding: 15px 25px;
+            border-radius: 8px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            z-index: 9999;
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .section-header h1 {
+                font-size: 32px;
+            }
+
+            .ranks-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="container">
+            <nav class="navbar">
+                <a href="index.html" class="logo">
+                    <i class="fas fa-cube"></i>
+                    Kalwi Server
+                </a>
+                <a href="index.html" class="back-btn">
+                    <i class="fas fa-arrow-left"></i>
+                    Kembali
+                </a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Ranks Section -->
+    <section class="ranks-section">
+        <div class="container">
+            <div class="section-header">
+                <h1>Server Ranks</h1>
+                <p>Pilih rank yang sesuai dengan kebutuhan Anda</p>
+            </div>
+            <div class="ranks-grid">
+                <div class="rank-card">
+                    <div class="rank-icon">VIP</div>
+                    <h3 class="rank-name">VIP</h3>
+                    <div class="rank-price">Rp 25.000</div>
+                    <ul class="rank-features">
+                        <li><i class="fas fa-check"></i> Fly Mode</li>
+                        <li><i class="fas fa-check"></i> 3 Homes</li>
+                        <li><i class="fas fa-check"></i> Nickname Color</li>
+                        <li><i class="fas fa-check"></i> Priority Join</li>
+                    </ul>
+                    <button class="buy-rank-btn" onclick="buyRank('VIP', '25000')">
+                        <i class="fas fa-shopping-cart"></i> Beli Rank
+                    </button>
+                </div>
+
+                <div class="rank-card">
+                    <div class="rank-icon">VIP+</div>
+                    <h3 class="rank-name">VIP+</h3>
+                    <div class="rank-price">Rp 50.000</div>
+                    <ul class="rank-features">
+                        <li><i class="fas fa-check"></i> Semua fitur VIP</li>
+                        <li><i class="fas fa-check"></i> 5 Homes</li>
+                        <li><i class="fas fa-check"></i> /hat Command</li>
+                        <li><i class="fas fa-check"></i> /workbench</li>
+                    </ul>
+                    <button class="buy-rank-btn" onclick="buyRank('VIP+', '50000')">
+                        <i class="fas fa-shopping-cart"></i> Beli Rank
+                    </button>
+                </div>
+
+                <div class="rank-card">
+                    <div class="rank-icon">MVP</div>
+                    <h3 class="rank-name">MVP</h3>
+                    <div class="rank-price">Rp 100.000</div>
+                    <ul class="rank-features">
+                        <li><i class="fas fa-check"></i> Semua fitur VIP+</li>
+                        <li><i class="fas fa-check"></i> 10 Homes</li>
+                        <li><i class="fas fa-check"></i> /echest</li>
+                        <li><i class="fas fa-check"></i> /feed</li>
+                    </ul>
+                    <button class="buy-rank-btn" onclick="buyRank('MVP', '100000')">
+                        <i class="fas fa-shopping-cart"></i> Beli Rank
+                    </button>
+                </div>
+
+                <div class="rank-card">
+                    <div class="rank-icon">MVP+</div>
+                    <h3 class="rank-name">MVP+</h3>
+                    <div class="rank-price">Rp 150.000</div>
+                    <ul class="rank-features">
+                        <li><i class="fas fa-check"></i> Semua fitur MVP</li>
+                        <li><i class="fas fa-check"></i> 15 Homes</li>
+                        <li><i class="fas fa-check"></i> /heal</li>
+                        <li><i class="fas fa-check"></i> /repair</li>
+                    </ul>
+                    <button class="buy-rank-btn" onclick="buyRank('MVP+', '150000')">
+                        <i class="fas fa-shopping-cart"></i> Beli Rank
+                    </button>
+                </div>
+
+                <div class="rank-card">
+                    <div class="rank-icon">MVP++</div>
+                    <h3 class="rank-name">MVP++</h3>
+                    <div class="rank-price">Rp 250.000</div>
+                    <ul class="rank-features">
+                        <li><i class="fas fa-check"></i> Semua fitur MVP+</li>
+                        <li><i class="fas fa-check"></i> 25 Homes</li>
+                        <li><i class="fas fa-check"></i> /near</li>
+                        <li><i class="fas fa-check"></i> /ptime</li>
+                    </ul>
+                    <button class="buy-rank-btn" onclick="buyRank('MVP++', '250000')">
+                        <i class="fas fa-shopping-cart"></i> Beli Rank
+                    </button>
+                </div>
+
+                <div class="rank-card">
+                    <div class="rank-icon">SUP</div>
+                    <h3 class="rank-name">Supreme</h3>
+                    <div class="rank-price">Rp 500.000</div>
+                    <ul class="rank-features">
+                        <li><i class="fas fa-check"></i> Semua fitur MVP++</li>
+                        <li><i class="fas fa-check"></i> 50 Homes</li>
+                        <li><i class="fas fa-check"></i> /fly speed</li>
+                        <li><i class="fas fa-check"></i> /god mode</li>
+                    </ul>
+                    <button class="buy-rank-btn" onclick="buyRank('Supreme', '500000')">
+                        <i class="fas fa-shopping-cart"></i> Beli Rank
+                    </button>
+                </div>
+
+                <div class="rank-card">
+                    <div class="rank-icon">LEG</div>
+                    <h3 class="rank-name">Legend</h3>
+                    <div class="rank-price">Rp 1.000.000</div>
+                    <ul class="rank-features">
+                        <li><i class="fas fa-check"></i> Semua fitur Supreme</li>
+                        <li><i class="fas fa-check"></i> 100 Homes</li>
+                        <li><i class="fas fa-check"></i> /vanish</li>
+                        <li><i class="fas fa-check"></i> Custom Prefix</li>
+                    </ul>
+                    <button class="buy-rank-btn" onclick="buyRank('Legend', '1000000')">
+                        <i class="fas fa-shopping-cart"></i> Beli Rank
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Login Required Modal -->
+    <div class="login-required" id="loginRequired">
+        <div class="login-required-content">
+            <i class="fas fa-user-lock" style="font-size: 48px; color: var(--primary); margin-bottom: 20px;"></i>
+            <h3>Login Diperlukan</h3>
+            <p>Anda harus login terlebih dahulu untuk membeli rank</p>
+            <a href="index.html" class="login-btn">Login Sekarang</a>
+        </div>
+    </div>
+
+    <!-- Contact Selection Modal -->
+    <div class="contact-modal" id="contactModal">
+        <div class="contact-modal-content">
+            <h3><i class="fas fa-phone-alt"></i> Pilih Kontak</h3>
+            <p>Silakan pilih salah satu kontak untuk melakukan pembelian</p>
+            
+            <div class="contact-options">
+                <div class="contact-option" onclick="sendToWhatsApp('6287755430203')">
+                    <i class="fab fa-whatsapp"></i>
+                    <div class="contact-info">
+                        <div class="contact-name">AdmudCraft</div>
+                        <div class="contact-number">6287755430203</div>
+                    </div>
+                </div>
+                
+                <div class="contact-option" onclick="sendToWhatsApp('6285810688736')">
+                    <i class="fab fa-whatsapp"></i>
+                    <div class="contact-info">
+                        <div class="contact-name">Aunzz</div>
+                        <div class="contact-number">6285810688736</div>
+                    </div>
+                </div>
+            </div>
+            
+            <button class="cancel-btn" onclick="closeContactModal()">Batal</button>
+        </div>
+    </div>
+
+    <script>
+        // Global variables to store rank information
+        let selectedRank = '';
+        let selectedPrice = '';
+        
+        // Get user data from localStorage
+        function getCurrentUser() {
+            const userData = localStorage.getItem('kalwiUser');
+            return userData ? JSON.parse(userData) : null;
+        }
+
+        // Buy rank function
+        function buyRank(rank, price) {
+            const currentUser = getCurrentUser();
+            
+            if (!currentUser) {
+                document.getElementById('loginRequired').style.display = 'flex';
+                return;
+            }
+            
+            // Store selected rank and price
+            selectedRank = rank;
+            selectedPrice = price;
+            
+            // Show contact selection modal
+            document.getElementById('contactModal').style.display = 'flex';
+        }
+
+        // Send to WhatsApp function
+        function sendToWhatsApp(phoneNumber) {
+            const currentUser = getCurrentUser();
+            
+            if (!currentUser) {
+                document.getElementById('loginRequired').style.display = 'flex';
+                closeContactModal();
+                return;
+            }
+            
+            // Format message for WhatsApp
+            const message = `from Rank: ${selectedPrice}%0ANickname: ${currentUser.displayName}%0ARank: ${selectedRank}`;
+            const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
+            
+            // Close modal
+            closeContactModal();
+            
+            // Open WhatsApp
+            window.open(whatsappUrl, '_blank');
+        }
+
+        // Close contact modal
+        function closeContactModal() {
+            document.getElementById('contactModal').style.display = 'none';
+        }
+
+        // Close login required modal
+        document.getElementById('loginRequired').addEventListener('click', function(e) {
+            if (e.target === this) {
+                this.style.display = 'none';
+            }
+        });
+
+        // Close contact modal when clicking outside
+        document.getElementById('contactModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeContactModal();
+            }
+        });
+
+        // Show notification function
+        function showNotification(message, type = 'success') {
+            const notification = document.createElement('div');
+            notification.className = 'notification';
+            notification.textContent = message;
+            
+            if (type === 'error') {
+                notification.style.background = '#e74c3c';
+            }
+            
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.remove();
+            }, 3000);
+        }
+    </script>
+</body>
+</html>

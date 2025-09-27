@@ -1,0 +1,614 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Minekings Server - Minecraft Indonesia</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        :root {
+            --primary: #2ecc71;
+            --secondary: #27ae60;
+            --dark: #2c3e50;
+            --light: #ecf0f1;
+            --white: #ffffff;
+            --gray: #7f8c8d;
+            --discord: #5865F2;
+            --youtube: #FF0000;
+            --tiktok: #000000;
+        }
+
+        body {
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            color: var(--white);
+            min-height: 100vh;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Login Modal */
+        .login-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.9);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+        }
+
+        .login-form {
+            background: var(--dark);
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            max-width: 400px;
+            width: 90%;
+            text-align: center;
+        }
+
+        .login-form h2 {
+            margin-bottom: 30px;
+            color: var(--primary);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px;
+            background: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.2);
+            border-radius: 8px;
+            color: var(--white);
+            font-size: 16px;
+            transition: all 0.3s;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: var(--primary);
+            background: rgba(255,255,255,0.15);
+        }
+
+        .platform-choice {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .platform-btn {
+            flex: 1;
+            padding: 15px;
+            background: rgba(255,255,255,0.1);
+            border: 2px solid transparent;
+            border-radius: 10px;
+            color: var(--white);
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: center;
+        }
+
+        .platform-btn:hover {
+            background: rgba(255,255,255,0.2);
+        }
+
+        .platform-btn.active {
+            border-color: var(--primary);
+            background: rgba(46, 204, 113, 0.2);
+        }
+
+        .platform-btn i {
+            font-size: 24px;
+            margin-bottom: 5px;
+            display: block;
+        }
+
+        .login-btn {
+            width: 100%;
+            padding: 15px;
+            background: var(--primary);
+            color: var(--white);
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 20px;
+            transition: all 0.3s;
+        }
+
+        .login-btn:hover {
+            background: var(--secondary);
+            transform: translateY(-2px);
+        }
+
+        /* Header */
+        header {
+            background: rgba(0,0,0,0.3);
+            backdrop-filter: blur(10px);
+            padding: 20px 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            font-size: 28px;
+            font-weight: bold;
+            color: var(--primary);
+        }
+
+        .logo i {
+            margin-right: 10px;
+            font-size: 32px;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            background: var(--primary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+
+        .logout-btn {
+            background: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.2);
+            color: var(--white);
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .logout-btn:hover {
+            background: rgba(255,255,255,0.2);
+        }
+
+        /* Hero Section */
+        .hero {
+            padding: 80px 0;
+            text-align: center;
+        }
+
+        .hero h1 {
+            font-size: 48px;
+            margin-bottom: 20px;
+            background: linear-gradient(45deg, var(--primary), #3498db);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero p {
+            font-size: 20px;
+            color: var(--gray);
+            margin-bottom: 30px;
+        }
+
+        .server-ip {
+            background: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.2);
+            padding: 15px 30px;
+            border-radius: 30px;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 18px;
+            margin-bottom: 30px;
+        }
+
+        .copy-btn {
+            background: var(--primary);
+            border: none;
+            color: var(--white);
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .copy-btn:hover {
+            background: var(--secondary);
+        }
+
+        /* Navigation Menu */
+        .nav-menu {
+            padding: 60px 0;
+        }
+
+        .menu-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+        }
+
+        .menu-card {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 15px;
+            padding: 40px;
+            text-align: center;
+            transition: all 0.3s;
+            cursor: pointer;
+            text-decoration: none;
+            color: var(--white);
+        }
+
+        .menu-card:hover {
+            transform: translateY(-10px);
+            background: rgba(255,255,255,0.1);
+        }
+
+        .menu-card.ranks {
+            border-color: var(--primary);
+        }
+
+        .menu-card.ranks:hover {
+            box-shadow: 0 10px 30px rgba(46, 204, 113, 0.3);
+        }
+
+        .menu-card.discord {
+            border-color: var(--discord);
+        }
+
+        .menu-card.discord:hover {
+            box-shadow: 0 10px 30px rgba(88, 101, 242, 0.3);
+        }
+
+        .menu-card.youtube {
+            border-color: var(--youtube);
+        }
+
+        .menu-card.youtube:hover {
+            box-shadow: 0 10px 30px rgba(255, 0, 0, 0.3);
+        }
+
+        .menu-card.tiktok {
+            border-color: var(--tiktok);
+        }
+
+        .menu-card.tiktok:hover {
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .menu-card i {
+            font-size: 48px;
+            margin-bottom: 20px;
+        }
+
+        .menu-card.ranks i {
+            color: var(--primary);
+        }
+
+        .menu-card.discord i {
+            color: var(--discord);
+        }
+
+        .menu-card.youtube i {
+            color: var(--youtube);
+        }
+
+        .menu-card.tiktok i {
+            color: var(--tiktok);
+        }
+
+        .menu-card h3 {
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+
+        .menu-card p {
+            color: var(--gray);
+            margin-bottom: 20px;
+        }
+
+        /* Footer */
+        footer {
+            background: rgba(0,0,0,0.3);
+            padding: 40px 0;
+            text-align: center;
+            border-top: 1px solid rgba(255,255,255,0.1);
+            margin-top: 60px;
+        }
+
+        .footer-content {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .footer-links a {
+            color: var(--gray);
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .footer-links a:hover {
+            color: var(--primary);
+        }
+
+        .footer-bottom {
+            color: var(--gray);
+            font-size: 14px;
+        }
+
+        /* Notification */
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: var(--primary);
+            color: var(--white);
+            padding: 15px 25px;
+            border-radius: 8px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            z-index: 9999;
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 32px;
+            }
+
+            .menu-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .platform-choice {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Login Modal -->
+    <div class="login-modal" id="loginModal">
+        <div class="login-form">
+            <h2><i class="fas fa-gamepad"></i> Login ke Server</h2>
+            <form id="loginForm">
+                <div class="form-group">
+                    <label for="nickname">Nickname Minecraft</label>
+                    <input type="text" id="nickname" placeholder="Masukkan nickname Minecraft" required>
+                </div>
+                <div class="form-group">
+                    <label>Pilih Platform</label>
+                    <div class="platform-choice">
+                        <div class="platform-btn active" data-platform="java">
+                            <i class="fab fa-java"></i>
+                            <span>Java Edition</span>
+                        </div>
+                        <div class="platform-btn" data-platform="bedrock">
+                            <i class="fas fa-mobile-alt"></i>
+                            <span>Bedrock Edition</span>
+                        </div>
+                    </div>
+                </div>
+                <button type="submit" class="login-btn">
+                    <i class="fas fa-sign-in-alt"></i> Masuk
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Header -->
+    <header>
+        <div class="container">
+            <nav class="navbar">
+                <div class="logo">
+                    <i class="fas fa-cube"></i>
+                    MineKings Server
+                </div>
+                <div class="user-info" id="userInfo" style="display: none;">
+                    <div class="user-avatar" id="userAvatar">U</div>
+                    <span id="userNickname">User</span>
+                    <button class="logout-btn" onclick="logout()">
+                        <i class="fas fa-sign-out-alt"></i> Logout
+                    </button>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <h1>Server Minecraft Indonesia</h1>
+            <p>Bergabunglah dengan komunitas Minecraft terbaik di Indonesia</p>
+            <div class="server-ip">
+                <span>minekings.my.id:19136</span>
+                <button class="copy-btn" onclick="copyIP()">
+                    <i class="fas fa-copy"></i> Copy
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Navigation Menu -->
+    <section class="nav-menu">
+        <div class="container">
+            <div class="menu-grid">
+                <a href="ranks.html" class="menu-card ranks">
+                    <i class="fas fa-crown"></i>
+                    <h3>Server Ranks</h3>
+                    <p>Beli rank untuk mendapatkan fitur premium</p>
+                </a>
+                <a href="https://discord.gg/minekings" class="menu-card discord" target="_blank">
+                    <i class="fab fa-discord"></i>
+                    <h3>Discord</h3>
+                    <p>Bergabung dengan komunitas kami</p>
+                </a>
+                <a href="https://www.youtube.com/@minekings-official" class="menu-card youtube" target="_blank">
+                    <i class="fab fa-youtube"></i>
+                    <h3>YouTube</h3>
+                    <p>Tonton video gameplay kami</p>
+                </a>
+                <a href="https://tiktok.com/@admudcraft" class="menu-card tiktok" target="_blank">
+                    <i class="fab fa-tiktok"></i>
+                    <h3>TikTok</h3>
+                    <p>Lihat konten seru server</p>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-links">
+                    <a href="https://bit.ly/group_minekings">WhatsApp</a>
+                    <a href="https://discord.gg/AD9Zn2z" target="_blank">Discord</a>
+                    <a href="https://youtube.com/minekings" target="_blank">YouTube</a>
+                </div>
+            </div>  
+            <div class="footer-bottom">
+                <p>&copy; 2025 MineKings Server. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Login functionality
+        let currentUser = null;
+        let userPlatform = 'java';
+
+        // Platform selection
+        document.querySelectorAll('.platform-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                document.querySelectorAll('.platform-btn').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                userPlatform = this.dataset.platform;
+            });
+        });
+
+        // Login form
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const nickname = document.getElementById('nickname').value.trim();
+            
+            if (nickname) {
+                // Add dot for Bedrock
+                const displayName = userPlatform === 'bedrock' ? `.${nickname}` : nickname;
+                
+                currentUser = {
+                    nickname: nickname,
+                    displayName: displayName,
+                    platform: userPlatform
+                };
+                
+                // Save to localStorage
+                localStorage.setItem('kalwiUser', JSON.stringify(currentUser));
+                
+                // Update UI
+                document.getElementById('userAvatar').textContent = displayName.charAt(0).toUpperCase();
+                document.getElementById('userNickname').textContent = displayName;
+                document.getElementById('userInfo').style.display = 'flex';
+                document.getElementById('loginModal').style.display = 'none';
+                
+                showNotification(`Selamat datang, ${displayName}!`);
+            }
+        });
+
+        // Check if user already logged in
+        window.addEventListener('DOMContentLoaded', function() {
+            const savedUser = localStorage.getItem('kalwiUser');
+            if (savedUser) {
+                currentUser = JSON.parse(savedUser);
+                document.getElementById('userAvatar').textContent = currentUser.displayName.charAt(0).toUpperCase();
+                document.getElementById('userNickname').textContent = currentUser.displayName;
+                document.getElementById('userInfo').style.display = 'flex';
+                document.getElementById('loginModal').style.display = 'none';
+            }
+        });
+
+        // Logout
+        function logout() {
+            currentUser = null;
+            localStorage.removeItem('kalwiUser');
+            document.getElementById('loginModal').style.display = 'flex';
+            document.getElementById('userInfo').style.display = 'none';
+            document.getElementById('nickname').value = '';
+        }
+
+        // Copy IP
+        function copyIP() {
+            navigator.clipboard.writeText('minekings.my.id:19136');
+            showNotification('IP Server berhasil disalin!');
+        }
+
+        // Show notification
+        function showNotification(message, type = 'success') {
+            const notification = document.createElement('div');
+            notification.className = 'notification';
+            notification.textContent = message;
+            
+            if (type === 'error') {
+                notification.style.background = '#e74c3c';
+            }
+            
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.remove();
+            }, 3000);
+        }
+    </script>
+</body>
+</html>
