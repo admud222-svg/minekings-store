@@ -5,28 +5,52 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Server Ranks - Minekings Server</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Poppins', sans-serif;
         }
 
         :root {
             --primary: #2ecc71;
             --secondary: #27ae60;
-            --dark: #2c3e50;
+            --dark: #1a1a2e;
+            --darker: #0f172a;
             --light: #ecf0f1;
             --white: #ffffff;
-            --gray: #7f8c8d;
+            --gray: #94a3b8;
+            --card-bg: rgba(30, 41, 59, 0.7);
+            --bronze: #cd7f32;
+            --silver: #c0c0c0;
+            --gold: #ffd700;
+            --platinum: #e5e4e2;
+            --diamond: #b9f2ff;
+            --master: #ff00ff;
+            --king: #ff4500;
         }
 
         body {
-            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
             color: var(--white);
             min-height: 100vh;
             line-height: 1.6;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('https://www.transparenttextures.com/patterns/cubes.png');
+            opacity: 0.05;
+            z-index: -1;
         }
 
         .container {
@@ -37,12 +61,14 @@
 
         /* Header */
         header {
-            background: rgba(0,0,0,0.3);
-            backdrop-filter: blur(10px);
-            padding: 20px 0;
+            background: rgba(15, 23, 42, 0.8);
+            backdrop-filter: blur(15px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 15px 0;
             position: sticky;
             top: 0;
             z-index: 1000;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
         }
 
         .navbar {
@@ -54,33 +80,72 @@
         .logo {
             display: flex;
             align-items: center;
-            font-size: 28px;
-            font-weight: bold;
-            color: var(--primary);
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--white);
             text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .logo:hover {
+            transform: scale(1.05);
+        }
+
+        .logo-icon {
+            width: 45px;
+            height: 45px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 12px;
+            box-shadow: 0 4px 15px rgba(46, 204, 113, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .logo-icon::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transform: rotate(45deg);
+            animation: shine 3s infinite;
+        }
+
+        @keyframes shine {
+            0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+            100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
         }
 
         .logo i {
-            margin-right: 10px;
-            font-size: 32px;
+            font-size: 24px;
+            z-index: 1;
         }
 
         .back-btn {
-            background: rgba(255,255,255,0.1);
-            border: 1px solid rgba(255,255,255,0.2);
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
             color: var(--white);
-            padding: 8px 15px;
-            border-radius: 5px;
+            padding: 10px 18px;
+            border-radius: 10px;
             cursor: pointer;
-            transition: all 0.3s;
+            transition: all 0.3s ease;
             text-decoration: none;
             display: flex;
             align-items: center;
             gap: 8px;
+            font-weight: 500;
         }
 
         .back-btn:hover {
-            background: rgba(255,255,255,0.2);
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
         }
 
         /* Ranks Section */
@@ -95,13 +160,34 @@
 
         .section-header h1 {
             font-size: 42px;
-            margin-bottom: 10px;
-            color: var(--primary);
+            margin-bottom: 15px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            font-weight: 700;
+            position: relative;
+            display: inline-block;
+        }
+
+        .section-header h1::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 4px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border-radius: 2px;
         }
 
         .section-header p {
             font-size: 18px;
             color: var(--gray);
+            max-width: 600px;
+            margin: 0 auto;
+            margin-top: 20px;
         }
 
         .ranks-grid {
@@ -111,36 +197,55 @@
         }
 
         .rank-card {
-            background: rgba(255,255,255,0.05);
-            border: 1px solid rgba(255,255,255,0.1);
-            border-radius: 15px;
+            background: var(--card-bg);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
             padding: 30px;
             text-align: center;
-            transition: all 0.3s;
+            transition: all 0.3s ease;
             position: relative;
             overflow: hidden;
-        }
-
-        .rank-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 5px;
-            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
         }
 
         .rank-card:hover {
             transform: translateY(-10px);
-            background: rgba(255,255,255,0.1);
-            box-shadow: 0 15px 40px rgba(0,0,0,0.3);
+            background: rgba(30, 41, 59, 0.9);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Rank-specific styles */
+        .rank-card.bronze::before {
+            background: linear-gradient(90deg, var(--bronze), #8b5a2b);
+        }
+        
+        .rank-card.silver::before {
+            background: linear-gradient(90deg, var(--silver), #a9a9a9);
+        }
+        
+        .rank-card.gold::before {
+            background: linear-gradient(90deg, var(--gold), #daa520);
+        }
+        
+        .rank-card.platinum::before {
+            background: linear-gradient(90deg, var(--platinum), #a8a8a8);
+        }
+        
+        .rank-card.diamond::before {
+            background: linear-gradient(90deg, var(--diamond), #7dd3fc);
+        }
+        
+        .rank-card.master::before {
+            background: linear-gradient(90deg, var(--master), #d946ef);
+        }
+        
+        .rank-card.king::before {
+            background: linear-gradient(90deg, var(--king), #ff6347);
         }
 
         .rank-icon {
             width: 80px;
             height: 80px;
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
             border-radius: 50%;
             display: flex;
             align-items: center;
@@ -148,20 +253,144 @@
             margin: 0 auto 20px;
             font-size: 32px;
             font-weight: bold;
+            color: var(--white);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .rank-icon::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transform: rotate(45deg);
+            animation: shine 3s infinite;
+        }
+
+        /* Bronze rank - Pickaxe */
+        .rank-card.bronze .rank-icon {
+            background: linear-gradient(135deg, var(--bronze), #8b5a2b);
+            box-shadow: 0 5px 15px rgba(205, 127, 50, 0.3);
+        }
+
+        /* Silver rank - Fist (Jagoan) */
+        .rank-card.silver .rank-icon {
+            background: linear-gradient(135deg, var(--silver), #a9a9a9);
+            box-shadow: 0 5px 15px rgba(192, 192, 192, 0.3);
+        }
+
+        /* Gold rank - Shield */
+        .rank-card.gold .rank-icon {
+            background: linear-gradient(135deg, var(--gold), #daa520);
+            box-shadow: 0 5px 15px rgba(255, 215, 0, 0.3);
+        }
+
+        /* Platinum rank - Helmet */
+        .rank-card.platinum .rank-icon {
+            background: linear-gradient(135deg, var(--platinum), #a8a8a8);
+            box-shadow: 0 5px 15px rgba(229, 228, 226, 0.3);
+        }
+
+        /* Diamond rank - Diamond */
+        .rank-card.diamond .rank-icon {
+            background: linear-gradient(135deg, var(--diamond), #7dd3fc);
+            box-shadow: 0 5px 15px rgba(185, 242, 255, 0.3);
+        }
+
+        /* Master rank - Dragon */
+        .rank-card.master .rank-icon {
+            background: linear-gradient(135deg, var(--master), #d946ef);
+            box-shadow: 0 5px 15px rgba(255, 0, 255, 0.3);
+        }
+
+        /* King rank - Throne */
+        .rank-card.king .rank-icon {
+            background: linear-gradient(135deg, var(--king), #ff6347);
+            box-shadow: 0 5px 15px rgba(255, 69, 0, 0.3);
         }
 
         .rank-name {
-            font-size: 24px;
-            font-weight: bold;
+            font-size: 22px;
+            font-weight: 600;
             margin-bottom: 15px;
-            color: var(--primary);
+        }
+
+        .rank-card.bronze .rank-name {
+            color: var(--bronze);
+        }
+        
+        .rank-card.silver .rank-name {
+            color: var(--silver);
+        }
+        
+        .rank-card.gold .rank-name {
+            color: var(--gold);
+        }
+        
+        .rank-card.platinum .rank-name {
+            color: var(--platinum);
+        }
+        
+        .rank-card.diamond .rank-name {
+            color: var(--diamond);
+        }
+        
+        .rank-card.master .rank-name {
+            color: var(--master);
+        }
+        
+        .rank-card.king .rank-name {
+            color: var(--king);
         }
 
         .rank-price {
             font-size: 28px;
-            font-weight: bold;
+            font-weight: 700;
             margin-bottom: 20px;
             color: var(--white);
+            position: relative;
+            display: inline-block;
+        }
+
+        .rank-price::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            border-radius: 1px;
+        }
+
+        .rank-card.bronze .rank-price::after {
+            background: var(--bronze);
+        }
+        
+        .rank-card.silver .rank-price::after {
+            background: var(--silver);
+        }
+        
+        .rank-card.gold .rank-price::after {
+            background: var(--gold);
+        }
+        
+        .rank-card.platinum .rank-price::after {
+            background: var(--platinum);
+        }
+        
+        .rank-card.diamond .rank-price::after {
+            background: var(--diamond);
+        }
+        
+        .rank-card.master .rank-price::after {
+            background: var(--master);
+        }
+        
+        .rank-card.king .rank-price::after {
+            background: var(--king);
         }
 
         .rank-features {
@@ -176,29 +405,97 @@
             display: flex;
             align-items: center;
             gap: 10px;
+            transition: all 0.2s ease;
+        }
+
+        .rank-features li:hover {
+            color: var(--white);
+            transform: translateX(5px);
         }
 
         .rank-features li i {
-            color: var(--primary);
             font-size: 14px;
+        }
+
+        .rank-card.bronze .rank-features li i {
+            color: var(--bronze);
+        }
+        
+        .rank-card.silver .rank-features li i {
+            color: var(--silver);
+        }
+        
+        .rank-card.gold .rank-features li i {
+            color: var(--gold);
+        }
+        
+        .rank-card.platinum .rank-features li i {
+            color: var(--platinum);
+        }
+        
+        .rank-card.diamond .rank-features li i {
+            color: var(--diamond);
+        }
+        
+        .rank-card.master .rank-features li i {
+            color: var(--master);
+        }
+        
+        .rank-card.king .rank-features li i {
+            color: var(--king);
         }
 
         .buy-rank-btn {
             width: 100%;
             padding: 15px;
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
             color: var(--white);
             border: none;
-            border-radius: 8px;
+            border-radius: 10px;
             font-size: 16px;
-            font-weight: bold;
+            font-weight: 600;
             cursor: pointer;
-            transition: all 0.3s;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .rank-card.bronze .buy-rank-btn {
+            background: linear-gradient(135deg, var(--bronze), #8b5a2b);
+        }
+        
+        .rank-card.silver .buy-rank-btn {
+            background: linear-gradient(135deg, var(--silver), #a9a9a9);
+        }
+        
+        .rank-card.gold .buy-rank-btn {
+            background: linear-gradient(135deg, var(--gold), #daa520);
+        }
+        
+        .rank-card.platinum .buy-rank-btn {
+            background: linear-gradient(135deg, var(--platinum), #a8a8a8);
+        }
+        
+        .rank-card.diamond .buy-rank-btn {
+            background: linear-gradient(135deg, var(--diamond), #7dd3fc);
+        }
+        
+        .rank-card.master .buy-rank-btn {
+            background: linear-gradient(135deg, var(--master), #d946ef);
+        }
+        
+        .rank-card.king .buy-rank-btn {
+            background: linear-gradient(135deg, var(--king), #ff6347);
         }
 
         .buy-rank-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 25px rgba(46, 204, 113, 0.3);
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+        }
+
+        .buy-rank-btn:active {
+            transform: translateY(1px);
         }
 
         /* Login Required Modal */
@@ -208,24 +505,42 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0,0,0,0.9);
+            background: rgba(0, 0, 0, 0.9);
             display: none;
             align-items: center;
             justify-content: center;
             z-index: 9999;
+            backdrop-filter: blur(5px);
         }
 
         .login-required-content {
-            background: var(--dark);
+            background: var(--darker);
             padding: 40px;
-            border-radius: 15px;
+            border-radius: 20px;
             text-align: center;
             max-width: 400px;
+            width: 90%;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            animation: modalFadeIn 0.3s ease;
+        }
+
+        @keyframes modalFadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         .login-required-content h3 {
             color: var(--primary);
             margin-bottom: 20px;
+            font-size: 24px;
+            font-weight: 600;
         }
 
         .login-required-content p {
@@ -234,20 +549,21 @@
         }
 
         .login-btn {
-            background: var(--primary);
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
             color: var(--white);
             border: none;
             padding: 12px 30px;
-            border-radius: 8px;
-            font-weight: bold;
+            border-radius: 10px;
+            font-weight: 600;
             cursor: pointer;
             text-decoration: none;
             display: inline-block;
-            transition: all 0.3s;
+            transition: all 0.3s ease;
         }
 
         .login-btn:hover {
-            background: var(--secondary);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(46, 204, 113, 0.3);
         }
 
         /* Contact Selection Modal */
@@ -257,26 +573,31 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0,0,0,0.9);
+            background: rgba(0, 0, 0, 0.9);
             display: none;
             align-items: center;
             justify-content: center;
             z-index: 9999;
+            backdrop-filter: blur(5px);
         }
 
         .contact-modal-content {
-            background: var(--dark);
+            background: var(--darker);
             padding: 40px;
-            border-radius: 15px;
+            border-radius: 20px;
             text-align: center;
             max-width: 500px;
             width: 90%;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            animation: modalFadeIn 0.3s ease;
         }
 
         .contact-modal h3 {
             color: var(--primary);
             margin-bottom: 20px;
             font-size: 24px;
+            font-weight: 600;
         }
 
         .contact-modal p {
@@ -292,20 +613,21 @@
         }
 
         .contact-option {
-            background: rgba(255,255,255,0.1);
-            border: 1px solid rgba(255,255,255,0.2);
-            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
             padding: 15px;
             display: flex;
             align-items: center;
             gap: 15px;
             cursor: pointer;
-            transition: all 0.3s;
+            transition: all 0.3s ease;
         }
 
         .contact-option:hover {
-            background: rgba(255,255,255,0.2);
+            background: rgba(255, 255, 255, 0.15);
             transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
         }
 
         .contact-option i {
@@ -318,8 +640,9 @@
         }
 
         .contact-name {
-            font-weight: bold;
+            font-weight: 600;
             margin-bottom: 5px;
+            color: var(--white);
         }
 
         .contact-number {
@@ -328,18 +651,18 @@
         }
 
         .cancel-btn {
-            background: rgba(255,255,255,0.1);
+            background: rgba(255, 255, 255, 0.1);
             color: var(--white);
-            border: 1px solid rgba(255,255,255,0.2);
+            border: 1px solid rgba(255, 255, 255, 0.2);
             padding: 10px 20px;
-            border-radius: 5px;
+            border-radius: 8px;
             cursor: pointer;
-            transition: all 0.3s;
-            font-weight: bold;
+            transition: all 0.3s ease;
+            font-weight: 500;
         }
 
         .cancel-btn:hover {
-            background: rgba(255,255,255,0.2);
+            background: rgba(255, 255, 255, 0.2);
         }
 
         /* Notification */
@@ -347,13 +670,14 @@
             position: fixed;
             top: 20px;
             right: 20px;
-            background: var(--primary);
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
             color: var(--white);
             padding: 15px 25px;
-            border-radius: 8px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
             z-index: 9999;
             animation: slideIn 0.3s ease;
+            font-weight: 500;
         }
 
         @keyframes slideIn {
@@ -367,14 +691,64 @@
             }
         }
 
+        /* Fallback for icons */
+        .icon-fallback {
+            display: none;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
         /* Responsive */
         @media (max-width: 768px) {
             .section-header h1 {
                 font-size: 32px;
             }
+            
+            .section-header p {
+                font-size: 16px;
+            }
 
             .ranks-grid {
                 grid-template-columns: 1fr;
+                gap: 20px;
+            }
+            
+            .rank-card {
+                padding: 20px;
+            }
+            
+            .logo {
+                font-size: 20px;
+            }
+            
+            .logo-icon {
+                width: 40px;
+                height: 40px;
+            }
+            
+            .logo i {
+                font-size: 20px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .section-header h1 {
+                font-size: 28px;
+            }
+            
+            .navbar {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .ranks-section {
+                padding: 40px 0;
+            }
+            
+            .rank-icon {
+                width: 70px;
+                height: 70px;
+                font-size: 28px;
             }
         }
     </style>
@@ -385,7 +759,9 @@
         <div class="container">
             <nav class="navbar">
                 <a href="index.html" class="logo">
-                    <i class="fas fa-cube"></i>
+                    <div class="logo-icon">
+                        <i class="fas fa-crown"></i>
+                    </div>
                     Minekings Server
                 </a>
                 <a href="index.html" class="back-btn">
@@ -401,11 +777,14 @@
         <div class="container">
             <div class="section-header">
                 <h1>Server Ranks</h1>
-                <p>Pilih rank yang sesuai dengan kebutuhan Anda</p>
+                <p>Pilih rank yang sesuai dengan kebutuhan Anda dan nikmati fitur-fitur eksklusif di server kami</p>
             </div>
             <div class="ranks-grid">
-                <div class="rank-card">
-                    <div class="rank-icon">JWR</div>
+                <div class="rank-card bronze">
+                    <div class="rank-icon">
+                        <i class="fas fa-hammer"></i>
+                        <span class="icon-fallback">JWR</span>
+                    </div>
                     <h3 class="rank-name">MINE JAWARA</h3>
                     <div class="rank-price">Rp 15.000</div>
                     <ul class="rank-features">
@@ -419,8 +798,11 @@
                     </button>
                 </div>
 
-                <div class="rank-card">
-                    <div class="rank-icon">JGN</div>
+                <div class="rank-card silver">
+                    <div class="rank-icon">
+                        <i class="fas fa-fist-raised"></i>
+                        <span class="icon-fallback">JGN</span>
+                    </div>
                     <h3 class="rank-name">MINE JAGOAN</h3>
                     <div class="rank-price">Rp 30.000</div>
                     <ul class="rank-features">
@@ -434,8 +816,11 @@
                     </button>
                 </div>
 
-                <div class="rank-card">
-                    <div class="rank-icon">JUGN</div>
+                <div class="rank-card gold">
+                    <div class="rank-icon">
+                        <i class="fas fa-shield-alt"></i>
+                        <span class="icon-fallback">JUGN</span>
+                    </div>
                     <h3 class="rank-name">MINE JURAGAN</h3>
                     <div class="rank-price">Rp 45.000</div>
                     <ul class="rank-features">
@@ -449,8 +834,11 @@
                     </button>
                 </div>
 
-                <div class="rank-card">
-                    <div class="rank-icon">VTRN</div>
+                <div class="rank-card platinum">
+                    <div class="rank-icon">
+                        <i class="fas fa-hard-hat"></i>
+                        <span class="icon-fallback">VTRN</span>
+                    </div>
                     <h3 class="rank-name">MINE VETERAN</h3>
                     <div class="rank-price">Rp 60.000</div>
                     <ul class="rank-features">
@@ -464,8 +852,11 @@
                     </button>
                 </div>
 
-                <div class="rank-card">
-                    <div class="rank-icon">SLTN</div>
+                <div class="rank-card diamond">
+                    <div class="rank-icon">
+                        <i class="fas fa-gem"></i>
+                        <span class="icon-fallback">SLTN</span>
+                    </div>
                     <h3 class="rank-name">MINE SULTAN</h3>
                     <div class="rank-price">Rp 75.000</div>
                     <ul class="rank-features">
@@ -479,8 +870,11 @@
                     </button>
                 </div>
 
-                <div class="rank-card">
-                    <div class="rank-icon">SPUH</div>
+                <div class="rank-card master">
+                    <div class="rank-icon">
+                        <i class="fas fa-dragon"></i>
+                        <span class="icon-fallback">SPUH</span>
+                    </div>
                     <h3 class="rank-name">MINE SEPUH</h3>
                     <div class="rank-price">Rp 90.000</div>
                     <ul class="rank-features">
@@ -494,8 +888,11 @@
                     </button>
                 </div>
 
-                <div class="rank-card">
-                    <div class="rank-icon">KINGS</div>
+                <div class="rank-card king">
+                    <div class="rank-icon">
+                        <i class="fas fa-chess-king"></i>
+                        <span class="icon-fallback">KINGS</span>
+                    </div>
                     <h3 class="rank-name">MINE KINGS</h3>
                     <div class="rank-price">Rp 100.000</div>
                     <ul class="rank-features">
@@ -551,6 +948,26 @@
     </div>
 
     <script>
+        // Fallback for icons that don't load
+        document.addEventListener('DOMContentLoaded', function() {
+            const icons = document.querySelectorAll('.rank-icon i');
+            
+            icons.forEach(icon => {
+                // Check if the icon is visible
+                setTimeout(() => {
+                    const computedStyle = window.getComputedStyle(icon);
+                    if (computedStyle.opacity === '0' || computedStyle.visibility === 'hidden' || icon.offsetWidth === 0 || icon.offsetHeight === 0) {
+                        // Icon is not visible, show fallback
+                        const fallback = icon.nextElementSibling;
+                        if (fallback && fallback.classList.contains('icon-fallback')) {
+                            fallback.style.display = 'block';
+                            icon.style.display = 'none';
+                        }
+                    }
+                }, 1000);
+            });
+        });
+        
         // Global variables to store rank information
         let selectedRank = '';
         let selectedPrice = '';
@@ -641,4 +1058,3 @@
     </script>
 </body>
 </html>
-
