@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Server Ranks - Kalwi Server</title>
+    <title>Server Ranks - Minekings Server</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         * {
@@ -386,7 +386,7 @@
             <nav class="navbar">
                 <a href="index.html" class="logo">
                     <i class="fas fa-cube"></i>
-                    Kalwi Server
+                    Minekings Server
                 </a>
                 <a href="index.html" class="back-btn">
                     <i class="fas fa-arrow-left"></i>
@@ -589,7 +589,10 @@
             }
             
             // Format message for WhatsApp
-            const message = `from Rank: ${selectedPrice}%0ANickname: ${currentUser.displayName}%0ARank: ${selectedRank}`;
+            const message = 
+            `Beli Rank: ${selectedPrice}
+            Nickname: ${currentUser.displayName}
+            Rank: ${selectedRank}`;
             const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
             
             // Close modal
