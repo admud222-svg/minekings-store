@@ -1,1570 +1,253 @@
-<!DOCTYPE html>
-<html lang="id">
+<!doctype html>
+<html lang=id>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Server Ranks - Minekings Server</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Poppins', sans-serif;
-        }
-
-        :root {
-            --primary: #2ecc71;
-            --secondary: #27ae60;
-            --dark: #1a1a2e;
-            --darker: #0f172a;
-            --light: #ecf0f1;
-            --white: #ffffff;
-            --gray: #94a3b8;
-            --card-bg: rgba(30, 41, 59, 0.7);
-            --bronze: #cd7f32;
-            --silver: #c0c0c0;
-            --gold: #ffd700;
-            --platinum: #e5e4e2;
-            --diamond: #b9f2ff;
-            --master: #ff00ff;
-            --king: #ff4500;
-            --discount: #ff4757;
-        }
-
-        body {
-            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
-            color: var(--white);
-            min-height: 100vh;
-            line-height: 1.6;
-            position: relative;
-            overflow-x: hidden;
-        }
-
-        body::before {
-            content: '';
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-image: url('https://www.transparenttextures.com/patterns/cubes.png');
-            opacity: 0.05;
-            z-index: -1;
-        }
-
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 20px;
-        }
-
-        /* Header */
-        header {
-            background: rgba(15, 23, 42, 0.8);
-            backdrop-filter: blur(15px);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-            padding: 15px 0;
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
-        }
-
-        .navbar {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .logo {
-            display: flex;
-            align-items: center;
-            font-size: 24px;
-            font-weight: 700;
-            color: var(--white);
-            text-decoration: none;
-            transition: all 0.3s ease;
-        }
-
-        .logo:hover {
-            transform: scale(1.05);
-        }
-
-        .logo-icon {
-            width: 45px;
-            height: 45px;
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-right: 12px;
-            box-shadow: 0 4px 15px rgba(46, 204, 113, 0.3);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .logo-icon::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.3), transparent);
-            transform: rotate(45deg);
-            animation: shine 3s infinite;
-        }
-
-        @keyframes shine {
-            0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
-            100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
-        }
-
-        .logo i {
-            font-size: 24px;
-            z-index: 1;
-        }
-
-        .back-btn {
-            background: rgba(255, 255, 255, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            color: var(--white);
-            padding: 10px 18px;
-            border-radius: 10px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            text-decoration: none;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-weight: 500;
-        }
-
-        .back-btn:hover {
-            background: rgba(255, 255, 255, 0.2);
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-        }
-
-        .admin-btn {
-            background: rgba(255, 71, 87, 0.2);
-            border: 1px solid rgba(255, 71, 87, 0.3);
-            color: var(--discount);
-            padding: 10px 18px;
-            border-radius: 10px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            text-decoration: none;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-weight: 500;
-            margin-left: 10px;
-        }
-
-        .admin-btn:hover {
-            background: rgba(255, 71, 87, 0.3);
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(255, 71, 87, 0.2);
-        }
-
-        /* Ranks Section */
-        .ranks-section {
-            padding: 60px 0;
-        }
-
-        .section-header {
-            text-align: center;
-            margin-bottom: 50px;
-        }
-
-        .section-header h1 {
-            font-size: 42px;
-            margin-bottom: 15px;
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-            font-weight: 700;
-            position: relative;
-            display: inline-block;
-        }
-
-        .section-header h1::after {
-            content: '';
-            position: absolute;
-            bottom: -10px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 80px;
-            height: 4px;
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
-            border-radius: 2px;
-        }
-
-        .section-header p {
-            font-size: 18px;
-            color: var(--gray);
-            max-width: 600px;
-            margin: 0 auto;
-            margin-top: 20px;
-        }
-
-        .discount-banner {
-            background: linear-gradient(135deg, var(--discount), #ff6b81);
-            border-radius: 16px;
-            padding: 20px;
-            margin-bottom: 30px;
-            text-align: center;
-            box-shadow: 0 10px 30px rgba(255, 71, 87, 0.3);
-            position: relative;
-            overflow: hidden;
-            display: none;
-        }
-
-        .discount-banner.active {
-            display: block;
-            animation: pulse 2s infinite;
-        }
-
-        @keyframes pulse {
-            0% { box-shadow: 0 0 0 0 rgba(255, 71, 87, 0.4); }
-            70% { box-shadow: 0 0 0 15px rgba(255, 71, 87, 0); }
-            100% { box-shadow: 0 0 0 0 rgba(255, 71, 87, 0); }
-        }
-
-        .discount-banner::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-            transform: rotate(45deg);
-            animation: shine 3s infinite;
-        }
-
-        .discount-banner h2 {
-            font-size: 28px;
-            margin-bottom: 10px;
-            color: var(--white);
-        }
-
-        .discount-banner p {
-            font-size: 16px;
-            color: rgba(255, 255, 255, 0.9);
-        }
-
-        .discount-expiry {
-            font-size: 14px;
-            margin-top: 10px;
-            color: rgba(255, 255, 255, 0.8);
-            font-style: italic;
-        }
-
-        .ranks-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 30px;
-        }
-
-        .rank-card {
-            background: var(--card-bg);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 16px;
-            padding: 30px;
-            text-align: center;
-            transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-        }
-
-        .rank-card:hover {
-            transform: translateY(-10px);
-            background: rgba(30, 41, 59, 0.9);
-            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
-        }
-
-        .discount-badge {
-            position: absolute;
-            top: 15px;
-            right: 15px;
-            background: var(--discount);
-            color: var(--white);
-            font-weight: 700;
-            padding: 5px 10px;
-            border-radius: 20px;
-            font-size: 14px;
-            display: none;
-            z-index: 1;
-        }
-
-        .discount-badge.active {
-            display: block;
-            animation: pulse 2s infinite;
-        }
-
-        /* Rank-specific styles */
-        .rank-card.bronze::before {
-            background: linear-gradient(90deg, var(--bronze), #8b5a2b);
-        }
-        
-        .rank-card.silver::before {
-            background: linear-gradient(90deg, var(--silver), #a9a9a9);
-        }
-        
-        .rank-card.gold::before {
-            background: linear-gradient(90deg, var(--gold), #daa520);
-        }
-        
-        .rank-card.platinum::before {
-            background: linear-gradient(90deg, var(--platinum), #a8a8a8);
-        }
-        
-        .rank-card.diamond::before {
-            background: linear-gradient(90deg, var(--diamond), #7dd3fc);
-        }
-        
-        .rank-card.master::before {
-            background: linear-gradient(90deg, var(--master), #d946ef);
-        }
-        
-        .rank-card.king::before {
-            background: linear-gradient(90deg, var(--king), #ff6347);
-        }
-
-        .rank-icon {
-            width: 80px;
-            height: 80px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 0 auto 20px;
-            font-size: 32px;
-            font-weight: bold;
-            color: var(--white);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .rank-icon::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.3), transparent);
-            transform: rotate(45deg);
-            animation: shine 3s infinite;
-        }
-
-        /* Bronze rank - Pickaxe */
-        .rank-card.bronze .rank-icon {
-            background: linear-gradient(135deg, var(--bronze), #8b5a2b);
-            box-shadow: 0 5px 15px rgba(205, 127, 50, 0.3);
-        }
-
-        /* Silver rank - Fist (Jagoan) */
-        .rank-card.silver .rank-icon {
-            background: linear-gradient(135deg, var(--silver), #a9a9a9);
-            box-shadow: 0 5px 15px rgba(192, 192, 192, 0.3);
-        }
-
-        /* Gold rank - Shield */
-        .rank-card.gold .rank-icon {
-            background: linear-gradient(135deg, var(--gold), #daa520);
-            box-shadow: 0 5px 15px rgba(255, 215, 0, 0.3);
-        }
-
-        /* Platinum rank - Helmet */
-        .rank-card.platinum .rank-icon {
-            background: linear-gradient(135deg, var(--platinum), #a8a8a8);
-            box-shadow: 0 5px 15px rgba(229, 228, 226, 0.3);
-        }
-
-        /* Diamond rank - Diamond */
-        .rank-card.diamond .rank-icon {
-            background: linear-gradient(135deg, var(--diamond), #7dd3fc);
-            box-shadow: 0 5px 15px rgba(185, 242, 255, 0.3);
-        }
-
-        /* Master rank - Dragon */
-        .rank-card.master .rank-icon {
-            background: linear-gradient(135deg, var(--master), #d946ef);
-            box-shadow: 0 5px 15px rgba(255, 0, 255, 0.3);
-        }
-
-        /* King rank - Throne */
-        .rank-card.king .rank-icon {
-            background: linear-gradient(135deg, var(--king), #ff6347);
-            box-shadow: 0 5px 15px rgba(255, 69, 0, 0.3);
-        }
-
-        .rank-name {
-            font-size: 22px;
-            font-weight: 600;
-            margin-bottom: 15px;
-        }
-
-        .rank-card.bronze .rank-name {
-            color: var(--bronze);
-        }
-        
-        .rank-card.silver .rank-name {
-            color: var(--silver);
-        }
-        
-        .rank-card.gold .rank-name {
-            color: var(--gold);
-        }
-        
-        .rank-card.platinum .rank-name {
-            color: var(--platinum);
-        }
-        
-        .rank-card.diamond .rank-name {
-            color: var(--diamond);
-        }
-        
-        .rank-card.master .rank-name {
-            color: var(--master);
-        }
-        
-        .rank-card.king .rank-name {
-            color: var(--king);
-        }
-
-        .rank-price-container {
-            position: relative;
-            margin-bottom: 20px;
-        }
-
-        .rank-price {
-            font-size: 28px;
-            font-weight: 700;
-            color: var(--white);
-            position: relative;
-            display: inline-block;
-        }
-
-        .rank-price.original {
-            font-size: 20px;
-            text-decoration: line-through;
-            color: var(--gray);
-            margin-right: 10px;
-            display: none;
-        }
-
-        .rank-price.original.active {
-            display: inline-block;
-        }
-
-        .rank-price::after {
-            content: '';
-            position: absolute;
-            bottom: -5px;
-            left: 0;
-            width: 100%;
-            height: 2px;
-            border-radius: 1px;
-        }
-
-        .rank-card.bronze .rank-price::after {
-            background: var(--bronze);
-        }
-        
-        .rank-card.silver .rank-price::after {
-            background: var(--silver);
-        }
-        
-        .rank-card.gold .rank-price::after {
-            background: var(--gold);
-        }
-        
-        .rank-card.platinum .rank-price::after {
-            background: var(--platinum);
-        }
-        
-        .rank-card.diamond .rank-price::after {
-            background: var(--diamond);
-        }
-        
-        .rank-card.master .rank-price::after {
-            background: var(--master);
-        }
-        
-        .rank-card.king .rank-price::after {
-            background: var(--king);
-        }
-
-        .rank-features {
-            list-style: none;
-            margin-bottom: 25px;
-            text-align: left;
-        }
-
-        .rank-features li {
-            padding: 8px 0;
-            color: var(--gray);
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            transition: all 0.2s ease;
-        }
-
-        .rank-features li:hover {
-            color: var(--white);
-            transform: translateX(5px);
-        }
-
-        .rank-features li i {
-            font-size: 14px;
-        }
-
-        .rank-card.bronze .rank-features li i {
-            color: var(--bronze);
-        }
-        
-        .rank-card.silver .rank-features li i {
-            color: var(--silver);
-        }
-        
-        .rank-card.gold .rank-features li i {
-            color: var(--gold);
-        }
-        
-        .rank-card.platinum .rank-features li i {
-            color: var(--platinum);
-        }
-        
-        .rank-card.diamond .rank-features li i {
-            color: var(--diamond);
-        }
-        
-        .rank-card.master .rank-features li i {
-            color: var(--master);
-        }
-        
-        .rank-card.king .rank-features li i {
-            color: var(--king);
-        }
-
-        .buy-rank-btn {
-            width: 100%;
-            padding: 15px;
-            color: var(--white);
-            border: none;
-            border-radius: 10px;
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-        }
-
-        .rank-card.bronze .buy-rank-btn {
-            background: linear-gradient(135deg, var(--bronze), #8b5a2b);
-        }
-        
-        .rank-card.silver .buy-rank-btn {
-            background: linear-gradient(135deg, var(--silver), #a9a9a9);
-        }
-        
-        .rank-card.gold .buy-rank-btn {
-            background: linear-gradient(135deg, var(--gold), #daa520);
-        }
-        
-        .rank-card.platinum .buy-rank-btn {
-            background: linear-gradient(135deg, var(--platinum), #a8a8a8);
-        }
-        
-        .rank-card.diamond .buy-rank-btn {
-            background: linear-gradient(135deg, var(--diamond), #7dd3fc);
-        }
-        
-        .rank-card.master .buy-rank-btn {
-            background: linear-gradient(135deg, var(--master), #d946ef);
-        }
-        
-        .rank-card.king .buy-rank-btn {
-            background: linear-gradient(135deg, var(--king), #ff6347);
-        }
-
-        .buy-rank-btn:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
-        }
-
-        .buy-rank-btn:active {
-            transform: translateY(1px);
-        }
-
-        /* Login Required Modal */
-        .login-required {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.9);
-            display: none;
-            align-items: center;
-            justify-content: center;
-            z-index: 9999;
-            backdrop-filter: blur(5px);
-        }
-
-        .login-required-content {
-            background: var(--darker);
-            padding: 40px;
-            border-radius: 20px;
-            text-align: center;
-            max-width: 400px;
-            width: 90%;
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            animation: modalFadeIn 0.3s ease;
-        }
-
-        @keyframes modalFadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(-20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .login-required-content h3 {
-            color: var(--primary);
-            margin-bottom: 20px;
-            font-size: 24px;
-            font-weight: 600;
-        }
-
-        .login-required-content p {
-            margin-bottom: 30px;
-            color: var(--gray);
-        }
-
-        .login-btn {
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
-            color: var(--white);
-            border: none;
-            padding: 12px 30px;
-            border-radius: 10px;
-            font-weight: 600;
-            cursor: pointer;
-            text-decoration: none;
-            display: inline-block;
-            transition: all 0.3s ease;
-        }
-
-        .login-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(46, 204, 113, 0.3);
-        }
-
-        /* Contact Selection Modal */
-        .contact-modal {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.9);
-            display: none;
-            align-items: center;
-            justify-content: center;
-            z-index: 9999;
-            backdrop-filter: blur(5px);
-        }
-
-        .contact-modal-content {
-            background: var(--darker);
-            padding: 40px;
-            border-radius: 20px;
-            text-align: center;
-            max-width: 500px;
-            width: 90%;
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            animation: modalFadeIn 0.3s ease;
-        }
-
-        .contact-modal h3 {
-            color: var(--primary);
-            margin-bottom: 20px;
-            font-size: 24px;
-            font-weight: 600;
-        }
-
-        .contact-modal p {
-            margin-bottom: 30px;
-            color: var(--gray);
-        }
-
-        .contact-options {
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-            margin-bottom: 20px;
-        }
-
-        .contact-option {
-            background: rgba(255, 255, 255, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            border-radius: 12px;
-            padding: 15px;
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .contact-option:hover {
-            background: rgba(255, 255, 255, 0.15);
-            transform: translateY(-3px);
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-        }
-
-        .contact-option i {
-            font-size: 24px;
-            color: var(--primary);
-        }
-
-        .contact-info {
-            text-align: left;
-        }
-
-        .contact-name {
-            font-weight: 600;
-            margin-bottom: 5px;
-            color: var(--white);
-        }
-
-        .contact-number {
-            color: var(--gray);
-            font-size: 14px;
-        }
-
-        .cancel-btn {
-            background: rgba(255, 255, 255, 0.1);
-            color: var(--white);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            padding: 10px 20px;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            font-weight: 500;
-        }
-
-        .cancel-btn:hover {
-            background: rgba(255, 255, 255, 0.2);
-        }
-
-        /* Admin Panel Modal */
-        .admin-panel {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.9);
-            display: none;
-            align-items: center;
-            justify-content: center;
-            z-index: 10000;
-            backdrop-filter: blur(5px);
-        }
-
-        .admin-panel-content {
-            background: var(--darker);
-            padding: 40px;
-            border-radius: 20px;
-            max-width: 600px;
-            width: 90%;
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            animation: modalFadeIn 0.3s ease;
-        }
-
-        .admin-panel h2 {
-            color: var(--discount);
-            margin-bottom: 20px;
-            font-size: 28px;
-            font-weight: 600;
-            text-align: center;
-        }
-
-        .admin-form {
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-        }
-
-        .form-group {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-        }
-
-        .form-group label {
-            font-weight: 600;
-            color: var(--white);
-        }
-
-        .form-group input, .form-group select {
-            background: rgba(255, 255, 255, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            border-radius: 8px;
-            padding: 12px;
-            color: var(--white);
-            font-size: 16px;
-        }
-
-        .form-group input:focus, .form-group select:focus {
-            outline: none;
-            border-color: var(--discount);
-            box-shadow: 0 0 0 2px rgba(255, 71, 87, 0.2);
-        }
-
-        .admin-buttons {
-            display: flex;
-            gap: 15px;
-            margin-top: 10px;
-        }
-
-        .admin-btn {
-            flex: 1;
-            padding: 12px;
-            border-radius: 8px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            border: none;
-        }
-
-        .save-btn {
-            background: linear-gradient(135deg, var(--discount), #ff6b81);
-            color: var(--white);
-        }
-
-        .save-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(255, 71, 87, 0.3);
-        }
-
-        .disable-btn {
-            background: rgba(255, 255, 255, 0.1);
-            color: var(--white);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-        }
-
-        .disable-btn:hover {
-            background: rgba(255, 255, 255, 0.2);
-        }
-
-        .close-admin-btn {
-            background: rgba(255, 255, 255, 0.1);
-            color: var(--white);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            padding: 10px 20px;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            font-weight: 500;
-            margin-top: 20px;
-        }
-
-        .close-admin-btn:hover {
-            background: rgba(255, 255, 255, 0.2);
-        }
-
-        /* Notification */
-        .notification {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
-            color: var(--white);
-            padding: 15px 25px;
-            border-radius: 10px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-            z-index: 9999;
-            animation: slideIn 0.3s ease;
-            font-weight: 500;
-        }
-
-        @keyframes slideIn {
-            from {
-                transform: translateX(100%);
-                opacity: 0;
-            }
-            to {
-                transform: translateX(0);
-                opacity: 1;
-            }
-        }
-
-        /* Fallback for icons */
-        .icon-fallback {
-            display: none;
-            font-size: 14px;
-            font-weight: bold;
-        }
-
-        /* Responsive */
-        @media (max-width: 768px) {
-            .section-header h1 {
-                font-size: 32px;
-            }
-            
-            .section-header p {
-                font-size: 16px;
-            }
-
-            .ranks-grid {
-                grid-template-columns: 1fr;
-                gap: 20px;
-            }
-            
-            .rank-card {
-                padding: 20px;
-            }
-            
-            .logo {
-                font-size: 20px;
-            }
-            
-            .logo-icon {
-                width: 40px;
-                height: 40px;
-            }
-            
-            .logo i {
-                font-size: 20px;
-            }
-
-            .admin-btn {
-                padding: 8px 12px;
-                font-size: 14px;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .section-header h1 {
-                font-size: 28px;
-            }
-            
-            .navbar {
-                flex-direction: column;
-                gap: 15px;
-            }
-            
-            .ranks-section {
-                padding: 40px 0;
-            }
-            
-            .rank-icon {
-                width: 70px;
-                height: 70px;
-                font-size: 28px;
-            }
-
-            .admin-panel-content {
-                padding: 30px 20px;
-            }
-        }
-    </style>
+<meta charset=UTF-8>
+<meta name=viewport content="width=device-width,initial-scale=1">
+<title>Server Ranks - Minekings Server</title>
+<link rel=stylesheet href=https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel=stylesheet>
+<style>*{margin:0;padding:0;box-sizing:border-box;font-family:Poppins,sans-serif}:root{--primary:#2ecc71;--secondary:#27ae60;--dark:#1a1a2e;--darker:#0f172a;--light:#ecf0f1;--white:#ffffff;--gray:#94a3b8;--card-bg:rgba(30, 41, 59, 0.7);--bronze:#cd7f32;--silver:#c0c0c0;--gold:#ffd700;--platinum:#e5e4e2;--diamond:#b9f2ff;--master:#ff00ff;--king:#ff4500;--discount:#ff4757}body{background:linear-gradient(135deg,#0f172a 0,#1e293b 100%);color:var(--white);min-height:100vh;line-height:1.6;position:relative;overflow-x:hidden}body::before{content:'';position:fixed;top:0;left:0;width:100%;height:100%;background-image:url('https://www.transparenttextures.com/patterns/cubes.png');opacity:.05;z-index:-1}.container{max-width:1200px;margin:0 auto;padding:0 20px}header{background:rgba(15,23,42,.8);backdrop-filter:blur(15px);border-bottom:1px solid rgba(255,255,255,.1);padding:15px 0;position:sticky;top:0;z-index:1000;box-shadow:0 4px 20px rgba(0,0,0,.2)}.navbar{display:flex;justify-content:space-between;align-items:center}.logo{display:flex;align-items:center;font-size:24px;font-weight:700;color:var(--white);text-decoration:none;transition:all .3s ease}.logo:hover{transform:scale(1.05)}.logo-icon{width:45px;height:45px;background:linear-gradient(135deg,var(--primary),var(--secondary));border-radius:12px;display:flex;align-items:center;justify-content:center;margin-right:12px;box-shadow:0 4px 15px rgba(46,204,113,.3);position:relative;overflow:hidden}.logo-icon::before{content:'';position:absolute;top:-50%;left:-50%;width:200%;height:200%;background:linear-gradient(45deg,transparent,rgba(255,255,255,.3),transparent);transform:rotate(45deg);animation:shine 3s infinite}@keyframes shine{0%{transform:translateX(-100%) translateY(-100%) rotate(45deg)}100%{transform:translateX(100%) translateY(100%) rotate(45deg)}}.logo i{font-size:24px;z-index:1}.back-btn{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);color:var(--white);padding:10px 18px;border-radius:10px;cursor:pointer;transition:all .3s ease;text-decoration:none;display:flex;align-items:center;gap:8px;font-weight:500}.back-btn:hover{background:rgba(255,255,255,.2);transform:translateY(-2px);box-shadow:0 5px 15px rgba(0,0,0,.2)}.admin-btn{background:rgba(255,71,87,.2);border:1px solid rgba(255,71,87,.3);color:var(--discount);padding:10px 18px;border-radius:10px;cursor:pointer;transition:all .3s ease;text-decoration:none;display:flex;align-items:center;gap:8px;font-weight:500;margin-left:10px}.admin-btn:hover{background:rgba(255,71,87,.3);transform:translateY(-2px);box-shadow:0 5px 15px rgba(255,71,87,.2)}.ranks-section{padding:60px 0}.section-header{text-align:center;margin-bottom:50px}.section-header h1{font-size:42px;margin-bottom:15px;background:linear-gradient(135deg,var(--primary),var(--secondary));-webkit-background-clip:text;background-clip:text;color:transparent;font-weight:700;position:relative;display:inline-block}.section-header h1::after{content:'';position:absolute;bottom:-10px;left:50%;transform:translateX(-50%);width:80px;height:4px;background:linear-gradient(135deg,var(--primary),var(--secondary));border-radius:2px}.section-header p{font-size:18px;color:var(--gray);max-width:600px;margin:0 auto;margin-top:20px}.discount-banner{background:linear-gradient(135deg,var(--discount),#ff6b81);border-radius:16px;padding:20px;margin-bottom:30px;text-align:center;box-shadow:0 10px 30px rgba(255,71,87,.3);position:relative;overflow:hidden;display:none}.discount-banner.active{display:block;animation:pulse 2s infinite}@keyframes pulse{0%{box-shadow:0 0 0 0 rgba(255,71,87,.4)}70%{box-shadow:0 0 0 15px rgba(255,71,87,0)}100%{box-shadow:0 0 0 0 rgba(255,71,87,0)}}.discount-banner::before{content:'';position:absolute;top:-50%;left:-50%;width:200%;height:200%;background:linear-gradient(45deg,transparent,rgba(255,255,255,.2),transparent);transform:rotate(45deg);animation:shine 3s infinite}.discount-banner h2{font-size:28px;margin-bottom:10px;color:var(--white)}.discount-banner p{font-size:16px;color:rgba(255,255,255,.9)}.discount-expiry{font-size:14px;margin-top:10px;color:rgba(255,255,255,.8);font-style:italic}.ranks-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:30px}.rank-card{background:var(--card-bg);border:1px solid rgba(255,255,255,.1);border-radius:16px;padding:30px;text-align:center;transition:all .3s ease;position:relative;overflow:hidden;box-shadow:0 10px 30px rgba(0,0,0,.2)}.rank-card:hover{transform:translateY(-10px);background:rgba(30,41,59,.9);box-shadow:0 15px 40px rgba(0,0,0,.3)}.discount-badge{position:absolute;top:15px;right:15px;background:var(--discount);color:var(--white);font-weight:700;padding:5px 10px;border-radius:20px;font-size:14px;display:none;z-index:1}.discount-badge.active{display:block;animation:pulse 2s infinite}.rank-card.bronze::before{background:linear-gradient(90deg,var(--bronze),#8b5a2b)}.rank-card.silver::before{background:linear-gradient(90deg,var(--silver),#a9a9a9)}.rank-card.gold::before{background:linear-gradient(90deg,var(--gold),#daa520)}.rank-card.platinum::before{background:linear-gradient(90deg,var(--platinum),#a8a8a8)}.rank-card.diamond::before{background:linear-gradient(90deg,var(--diamond),#7dd3fc)}.rank-card.master::before{background:linear-gradient(90deg,var(--master),#d946ef)}.rank-card.king::before{background:linear-gradient(90deg,var(--king),tomato)}.rank-icon{width:80px;height:80px;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 20px;font-size:32px;font-weight:700;color:var(--white);position:relative;overflow:hidden}.rank-icon::before{content:'';position:absolute;top:-50%;left:-50%;width:200%;height:200%;background:linear-gradient(45deg,transparent,rgba(255,255,255,.3),transparent);transform:rotate(45deg);animation:shine 3s infinite}.rank-card.bronze .rank-icon{background:linear-gradient(135deg,var(--bronze),#8b5a2b);box-shadow:0 5px 15px rgba(205,127,50,.3)}.rank-card.silver .rank-icon{background:linear-gradient(135deg,var(--silver),#a9a9a9);box-shadow:0 5px 15px rgba(192,192,192,.3)}.rank-card.gold .rank-icon{background:linear-gradient(135deg,var(--gold),#daa520);box-shadow:0 5px 15px rgba(255,215,0,.3)}.rank-card.platinum .rank-icon{background:linear-gradient(135deg,var(--platinum),#a8a8a8);box-shadow:0 5px 15px rgba(229,228,226,.3)}.rank-card.diamond .rank-icon{background:linear-gradient(135deg,var(--diamond),#7dd3fc);box-shadow:0 5px 15px rgba(185,242,255,.3)}.rank-card.master .rank-icon{background:linear-gradient(135deg,var(--master),#d946ef);box-shadow:0 5px 15px rgba(255,0,255,.3)}.rank-card.king .rank-icon{background:linear-gradient(135deg,var(--king),tomato);box-shadow:0 5px 15px rgba(255,69,0,.3)}.rank-name{font-size:22px;font-weight:600;margin-bottom:15px}.rank-card.bronze .rank-name{color:var(--bronze)}.rank-card.silver .rank-name{color:var(--silver)}.rank-card.gold .rank-name{color:var(--gold)}.rank-card.platinum .rank-name{color:var(--platinum)}.rank-card.diamond .rank-name{color:var(--diamond)}.rank-card.master .rank-name{color:var(--master)}.rank-card.king .rank-name{color:var(--king)}.rank-price-container{position:relative;margin-bottom:20px}.rank-price{font-size:28px;font-weight:700;color:var(--white);position:relative;display:inline-block}.rank-price.original{font-size:20px;text-decoration:line-through;color:var(--gray);margin-right:10px;display:none}.rank-price.original.active{display:inline-block}.rank-price::after{content:'';position:absolute;bottom:-5px;left:0;width:100%;height:2px;border-radius:1px}.rank-card.bronze .rank-price::after{background:var(--bronze)}.rank-card.silver .rank-price::after{background:var(--silver)}.rank-card.gold .rank-price::after{background:var(--gold)}.rank-card.platinum .rank-price::after{background:var(--platinum)}.rank-card.diamond .rank-price::after{background:var(--diamond)}.rank-card.master .rank-price::after{background:var(--master)}.rank-card.king .rank-price::after{background:var(--king)}.rank-features{list-style:none;margin-bottom:25px;text-align:left}.rank-features li{padding:8px 0;color:var(--gray);display:flex;align-items:center;gap:10px;transition:all .2s ease}.rank-features li:hover{color:var(--white);transform:translateX(5px)}.rank-features li i{font-size:14px}.rank-card.bronze .rank-features li i{color:var(--bronze)}.rank-card.silver .rank-features li i{color:var(--silver)}.rank-card.gold .rank-features li i{color:var(--gold)}.rank-card.platinum .rank-features li i{color:var(--platinum)}.rank-card.diamond .rank-features li i{color:var(--diamond)}.rank-card.master .rank-features li i{color:var(--master)}.rank-card.king .rank-features li i{color:var(--king)}.buy-rank-btn{width:100%;padding:15px;color:var(--white);border:none;border-radius:10px;font-size:16px;font-weight:600;cursor:pointer;transition:all .3s ease;display:flex;align-items:center;justify-content:center;gap:8px}.rank-card.bronze .buy-rank-btn{background:linear-gradient(135deg,var(--bronze),#8b5a2b)}.rank-card.silver .buy-rank-btn{background:linear-gradient(135deg,var(--silver),#a9a9a9)}.rank-card.gold .buy-rank-btn{background:linear-gradient(135deg,var(--gold),#daa520)}.rank-card.platinum .buy-rank-btn{background:linear-gradient(135deg,var(--platinum),#a8a8a8)}.rank-card.diamond .buy-rank-btn{background:linear-gradient(135deg,var(--diamond),#7dd3fc)}.rank-card.master .buy-rank-btn{background:linear-gradient(135deg,var(--master),#d946ef)}.rank-card.king .buy-rank-btn{background:linear-gradient(135deg,var(--king),tomato)}.buy-rank-btn:hover{transform:translateY(-3px);box-shadow:0 10px 25px rgba(0,0,0,.3)}.buy-rank-btn:active{transform:translateY(1px)}.login-required{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.9);display:none;align-items:center;justify-content:center;z-index:9999;backdrop-filter:blur(5px)}.login-required-content{background:var(--darker);padding:40px;border-radius:20px;text-align:center;max-width:400px;width:90%;box-shadow:0 15px 35px rgba(0,0,0,.5);border:1px solid rgba(255,255,255,.1);animation:modalFadeIn .3s ease}@keyframes modalFadeIn{from{opacity:0;transform:translateY(-20px)}to{opacity:1;transform:translateY(0)}}.login-required-content h3{color:var(--primary);margin-bottom:20px;font-size:24px;font-weight:600}.login-required-content p{margin-bottom:30px;color:var(--gray)}.login-btn{background:linear-gradient(135deg,var(--primary),var(--secondary));color:var(--white);border:none;padding:12px 30px;border-radius:10px;font-weight:600;cursor:pointer;text-decoration:none;display:inline-block;transition:all .3s ease}.login-btn:hover{transform:translateY(-2px);box-shadow:0 5px 15px rgba(46,204,113,.3)}.contact-modal{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.9);display:none;align-items:center;justify-content:center;z-index:9999;backdrop-filter:blur(5px)}.contact-modal-content{background:var(--darker);padding:40px;border-radius:20px;text-align:center;max-width:500px;width:90%;box-shadow:0 15px 35px rgba(0,0,0,.5);border:1px solid rgba(255,255,255,.1);animation:modalFadeIn .3s ease}.contact-modal h3{color:var(--primary);margin-bottom:20px;font-size:24px;font-weight:600}.contact-modal p{margin-bottom:30px;color:var(--gray)}.contact-options{display:flex;flex-direction:column;gap:15px;margin-bottom:20px}.contact-option{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);border-radius:12px;padding:15px;display:flex;align-items:center;gap:15px;cursor:pointer;transition:all .3s ease}.contact-option:hover{background:rgba(255,255,255,.15);transform:translateY(-3px);box-shadow:0 5px 15px rgba(0,0,0,.2)}.contact-option i{font-size:24px;color:var(--primary)}.contact-info{text-align:left}.contact-name{font-weight:600;margin-bottom:5px;color:var(--white)}.contact-number{color:var(--gray);font-size:14px}.cancel-btn{background:rgba(255,255,255,.1);color:var(--white);border:1px solid rgba(255,255,255,.2);padding:10px 20px;border-radius:8px;cursor:pointer;transition:all .3s ease;font-weight:500}.cancel-btn:hover{background:rgba(255,255,255,.2)}.admin-panel{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.9);display:none;align-items:center;justify-content:center;z-index:10000;backdrop-filter:blur(5px)}.admin-panel-content{background:var(--darker);padding:40px;border-radius:20px;max-width:600px;width:90%;box-shadow:0 15px 35px rgba(0,0,0,.5);border:1px solid rgba(255,255,255,.1);animation:modalFadeIn .3s ease}.admin-panel h2{color:var(--discount);margin-bottom:20px;font-size:28px;font-weight:600;text-align:center}.admin-form{display:flex;flex-direction:column;gap:20px}.form-group{display:flex;flex-direction:column;gap:8px}.form-group label{font-weight:600;color:var(--white)}.form-group input,.form-group select{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);border-radius:8px;padding:12px;color:var(--white);font-size:16px}.form-group input:focus,.form-group select:focus{outline:0;border-color:var(--discount);box-shadow:0 0 0 2px rgba(255,71,87,.2)}.admin-buttons{display:flex;gap:15px;margin-top:10px}.admin-btn{flex:1;padding:12px;border-radius:8px;font-weight:600;cursor:pointer;transition:all .3s ease;border:none}.save-btn{background:linear-gradient(135deg,var(--discount),#ff6b81);color:var(--white)}.save-btn:hover{transform:translateY(-2px);box-shadow:0 5px 15px rgba(255,71,87,.3)}.disable-btn{background:rgba(255,255,255,.1);color:var(--white);border:1px solid rgba(255,255,255,.2)}.disable-btn:hover{background:rgba(255,255,255,.2)}.close-admin-btn{background:rgba(255,255,255,.1);color:var(--white);border:1px solid rgba(255,255,255,.2);padding:10px 20px;border-radius:8px;cursor:pointer;transition:all .3s ease;font-weight:500;margin-top:20px}.close-admin-btn:hover{background:rgba(255,255,255,.2)}.notification{position:fixed;top:20px;right:20px;background:linear-gradient(135deg,var(--primary),var(--secondary));color:var(--white);padding:15px 25px;border-radius:10px;box-shadow:0 5px 15px rgba(0,0,0,.3);z-index:9999;animation:slideIn .3s ease;font-weight:500}@keyframes slideIn{from{transform:translateX(100%);opacity:0}to{transform:translateX(0);opacity:1}}.icon-fallback{display:none;font-size:14px;font-weight:700}@media (max-width:768px){.section-header h1{font-size:32px}.section-header p{font-size:16px}.ranks-grid{grid-template-columns:1fr;gap:20px}.rank-card{padding:20px}.logo{font-size:20px}.logo-icon{width:40px;height:40px}.logo i{font-size:20px}.admin-btn{padding:8px 12px;font-size:14px}}@media (max-width:480px){.section-header h1{font-size:28px}.navbar{flex-direction:column;gap:15px}.ranks-section{padding:40px 0}.rank-icon{width:70px;height:70px;font-size:28px}.admin-panel-content{padding:30px 20px}}</style>
 </head>
 <body>
-    <!-- Header -->
-    <header>
-        <div class="container">
-            <nav class="navbar">
-                <a href="index.html" class="logo">
-                    <div class="logo-icon">
-                        <i class="fas fa-crown"></i>
-                    </div>
-                    Minekings Server
-                </a>
-                <div>
-                    <a href="index.html" class="back-btn">
-                        <i class="fas fa-arrow-left"></i>
-                        Kembali
-                    </a>
-                    <button class="admin-btn" onclick="openAdminPanel()">
-                        <i class="fas fa-cog"></i>
-                        Admin Panel
-                    </button>
-                </div>
-            </nav>
-        </div>
-    </header>
-
-    <!-- Ranks Section -->
-    <section class="ranks-section">
-        <div class="container">
-            <div class="section-header">
-                <h1>Server Ranks</h1>
-                <p>Pilih rank yang sesuai dengan kebutuhan Anda dan nikmati fitur-fitur eksklusif di server kami</p>
-            </div>
-            
-            <!-- Discount Banner -->
-            <div class="discount-banner" id="discountBanner">
-                <h2><i class="fas fa-tags"></i> PROMO DISKON!</h2>
-                <p>Dapatkan diskon khusus untuk semua pembelian rank server kami!</p>
-                <div class="discount-expiry" id="discountExpiry"></div>
-            </div>
-            
-            <div class="ranks-grid">
-                <div class="rank-card bronze" data-price="15000">
-                    <div class="discount-badge" id="bronzeDiscount">0%</div>
-                    <div class="rank-icon">
-                        <i class="fas fa-hammer"></i>
-                        <span class="icon-fallback">JWR</span>
-                    </div>
-                    <h3 class="rank-name">MINE JAWARA</h3>
-                    <div class="rank-price-container">
-                        <div class="rank-price original" id="bronzeOriginalPrice">Rp 15.000</div>
-                        <div class="rank-price" id="bronzePrice">Rp 15.000</div>
-                    </div>
-                    <ul class="rank-features">
-                        <li><i class="fas fa-check"></i> Fly Mode</li>
-                        <li><i class="fas fa-check"></i> 3 Homes</li>
-                        <li><i class="fas fa-check"></i> Nickname Color</li>
-                        <li><i class="fas fa-check"></i> Priority Join</li>
-                    </ul>
-                    <button class="buy-rank-btn" onclick="buyRank('MINE JAWARA', '15K', 15000)">
-                        <i class="fas fa-shopping-cart"></i> Beli Rank
-                    </button>
-                </div>
-
-                <div class="rank-card silver" data-price="30000">
-                    <div class="discount-badge" id="silverDiscount">0%</div>
-                    <div class="rank-icon">
-                        <i class="fas fa-fist-raised"></i>
-                        <span class="icon-fallback">JGN</span>
-                    </div>
-                    <h3 class="rank-name">MINE JAGOAN</h3>
-                    <div class="rank-price-container">
-                        <div class="rank-price original" id="silverOriginalPrice">Rp 30.000</div>
-                        <div class="rank-price" id="silverPrice">Rp 30.000</div>
-                    </div>
-                    <ul class="rank-features">
-                        <li><i class="fas fa-check"></i> Semua fitur MINE JAWARA</li>
-                        <li><i class="fas fa-check"></i> 5 Homes</li>
-                        <li><i class="fas fa-check"></i> /hat Command</li>
-                        <li><i class="fas fa-check"></i> /workbench</li>
-                    </ul>
-                    <button class="buy-rank-btn" onclick="buyRank('MINE JAGOAN', '30K', 30000)">
-                        <i class="fas fa-shopping-cart"></i> Beli Rank
-                    </button>
-                </div>
-
-                <div class="rank-card gold" data-price="45000">
-                    <div class="discount-badge" id="goldDiscount">0%</div>
-                    <div class="rank-icon">
-                        <i class="fas fa-shield-alt"></i>
-                        <span class="icon-fallback">JUGN</span>
-                    </div>
-                    <h3 class="rank-name">MINE JURAGAN</h3>
-                    <div class="rank-price-container">
-                        <div class="rank-price original" id="goldOriginalPrice">Rp 45.000</div>
-                        <div class="rank-price" id="goldPrice">Rp 45.000</div>
-                    </div>
-                    <ul class="rank-features">
-                        <li><i class="fas fa-check"></i> Semua fitur MINE JAGOAN+</li>
-                        <li><i class="fas fa-check"></i> 10 Homes</li>
-                        <li><i class="fas fa-check"></i> /echest</li>
-                        <li><i class="fas fa-check"></i> /feed</li>
-                    </ul>
-                    <button class="buy-rank-btn" onclick="buyRank('MINE JURAGAN', '45K', 45000)">
-                        <i class="fas fa-shopping-cart"></i> Beli Rank
-                    </button>
-                </div>
-
-                <div class="rank-card platinum" data-price="60000">
-                    <div class="discount-badge" id="platinumDiscount">0%</div>
-                    <div class="rank-icon">
-                        <i class="fas fa-hard-hat"></i>
-                        <span class="icon-fallback">VTRN</span>
-                    </div>
-                    <h3 class="rank-name">MINE VETERAN</h3>
-                    <div class="rank-price-container">
-                        <div class="rank-price original" id="platinumOriginalPrice">Rp 60.000</div>
-                        <div class="rank-price" id="platinumPrice">Rp 60.000</div>
-                    </div>
-                    <ul class="rank-features">
-                        <li><i class="fas fa-check"></i> Semua fitur MINE JURAGAN</li>
-                        <li><i class="fas fa-check"></i> 15 Homes</li>
-                        <li><i class="fas fa-check"></i> /heal</li>
-                        <li><i class="fas fa-check"></i> /repair</li>
-                    </ul>
-                    <button class="buy-rank-btn" onclick="buyRank('MINE VETERAN', '60K', 60000)">
-                        <i class="fas fa-shopping-cart"></i> Beli Rank
-                    </button>
-                </div>
-
-                <div class="rank-card diamond" data-price="75000">
-                    <div class="discount-badge" id="diamondDiscount">0%</div>
-                    <div class="rank-icon">
-                        <i class="fas fa-gem"></i>
-                        <span class="icon-fallback">SLTN</span>
-                    </div>
-                    <h3 class="rank-name">MINE SULTAN</h3>
-                    <div class="rank-price-container">
-                        <div class="rank-price original" id="diamondOriginalPrice">Rp 75.000</div>
-                        <div class="rank-price" id="diamondPrice">Rp 75.000</div>
-                    </div>
-                    <ul class="rank-features">
-                        <li><i class="fas fa-check"></i> Semua fitur MINE VETERAN</li>
-                        <li><i class="fas fa-check"></i> 25 Homes</li>
-                        <li><i class="fas fa-check"></i> /near</li>
-                        <li><i class="fas fa-check"></i> /ptime</li>
-                    </ul>
-                    <button class="buy-rank-btn" onclick="buyRank('MINE SULTAN', '75K', 75000)">
-                        <i class="fas fa-shopping-cart"></i> Beli Rank
-                    </button>
-                </div>
-
-                <div class="rank-card master" data-price="90000">
-                    <div class="discount-badge" id="masterDiscount">0%</div>
-                    <div class="rank-icon">
-                        <i class="fas fa-dragon"></i>
-                        <span class="icon-fallback">SPUH</span>
-                    </div>
-                    <h3 class="rank-name">MINE SEPUH</h3>
-                    <div class="rank-price-container">
-                        <div class="rank-price original" id="masterOriginalPrice">Rp 90.000</div>
-                        <div class="rank-price" id="masterPrice">Rp 90.000</div>
-                    </div>
-                    <ul class="rank-features">
-                        <li><i class="fas fa-check"></i> Semua fitur MINE SULTAN</li>
-                        <li><i class="fas fa-check"></i> 50 Homes</li>
-                        <li><i class="fas fa-check"></i> /fly speed</li>
-                        <li><i class="fas fa-check"></i> /god mode</li>
-                    </ul>
-                    <button class="buy-rank-btn" onclick="buyRank('MINE SEPUH', '90K', 90000)">
-                        <i class="fas fa-shopping-cart"></i> Beli Rank
-                    </button>
-                </div>
-
-                <div class="rank-card king" data-price="100000">
-                    <div class="discount-badge" id="kingDiscount">0%</div>
-                    <div class="rank-icon">
-                        <i class="fas fa-chess-king"></i>
-                        <span class="icon-fallback">KINGS</span>
-                    </div>
-                    <h3 class="rank-name">MINE KINGS</h3>
-                    <div class="rank-price-container">
-                        <div class="rank-price original" id="kingOriginalPrice">Rp 100.000</div>
-                        <div class="rank-price" id="kingPrice">Rp 100.000</div>
-                    </div>
-                    <ul class="rank-features">
-                        <li><i class="fas fa-check"></i> Semua fitur MINE SEPUH</li>
-                        <li><i class="fas fa-check"></i> 100 Homes</li>
-                        <li><i class="fas fa-check"></i> /vanish</li>
-                        <li><i class="fas fa-check"></i> Custom Prefix</li>
-                    </ul>
-                    <button class="buy-rank-btn" onclick="buyRank('MINE KINGS', '100K', 100000)">
-                        <i class="fas fa-shopping-cart"></i> Beli Rank
-                    </button>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Login Required Modal -->
-    <div class="login-required" id="loginRequired">
-        <div class="login-required-content">
-            <i class="fas fa-user-lock" style="font-size: 48px; color: var(--primary); margin-bottom: 20px;"></i>
-            <h3>Login Diperlukan</h3>
-            <p>Anda harus login terlebih dahulu untuk membeli rank</p>
-            <a href="index.html" class="login-btn">Login Sekarang</a>
-        </div>
-    </div>
-
-    <!-- Contact Selection Modal -->
-    <div class="contact-modal" id="contactModal">
-        <div class="contact-modal-content">
-            <h3><i class="fas fa-phone-alt"></i> Pilih Kontak</h3>
-            <p>Silakan pilih salah satu kontak untuk melakukan pembelian</p>
-            
-            <div class="contact-options">
-                <div class="contact-option" onclick="sendToWhatsApp('6287755430203')">
-                    <i class="fab fa-whatsapp"></i>
-                    <div class="contact-info">
-                        <div class="contact-name">AdmudCraft</div>
-                        <div class="contact-number">6287755430203</div>
-                    </div>
-                </div>
-                
-                <div class="contact-option" onclick="sendToWhatsApp('6285810688736')">
-                    <i class="fab fa-whatsapp"></i>
-                    <div class="contact-info">
-                        <div class="contact-name">Aunzz</div>
-                        <div class="contact-number">6285810688736</div>
-                    </div>
-                </div>
-            </div>
-            
-            <button class="cancel-btn" onclick="closeContactModal()">Batal</button>
-        </div>
-    </div>
-
-    <!-- Admin Panel Modal -->
-    <div class="admin-panel" id="adminPanel">
-        <div class="admin-panel-content">
-            <h2><i class="fas fa-cog"></i> Admin Panel - Diskon Rank</h2>
-            <form class="admin-form" id="discountForm">
-                <div class="form-group">
-                    <label for="discountPercentage">Persentase Diskon (%)</label>
-                    <input type="number" id="discountPercentage" min="0" max="100" step="1" required>
-                </div>
-                
-                <div class="form-group">
-                    <label for="discountExpiryDate">Tanggal Kedaluwarsa</label>
-                    <input type="datetime-local" id="discountExpiryDate" required>
-                </div>
-                
-                <div class="form-group">
-                    <label for="adminPassword">Password Admin</label>
-                    <input type="password" id="adminPassword" required>
-                </div>
-                
-                <div class="admin-buttons">
-                    <button type="submit" class="admin-btn save-btn">Simpan Diskon</button>
-                    <button type="button" class="admin-btn disable-btn" onclick="disableDiscount()">Nonaktifkan Diskon</button>
-                </div>
-            </form>
-            
-            <button class="close-admin-btn" onclick="closeAdminPanel()">Tutup Panel</button>
-        </div>
-    </div>
-
-    <script>
-        // Fungsi untuk menyembunyikan password dengan base64
-        function _0x1a2b(str) {
-            return btoa(str);
-        }
-        
-        const _0x5a6d = "T25lRm9yQWxs";
-        
-        // Fallback for icons that don't load
-        document.addEventListener('DOMContentLoaded', function() {
-            const icons = document.querySelectorAll('.rank-icon i');
-            
-            icons.forEach(icon => {
-                // Check if the icon is visible
-                setTimeout(() => {
-                    const computedStyle = window.getComputedStyle(icon);
-                    if (computedStyle.opacity === '0' || computedStyle.visibility === 'hidden' || icon.offsetWidth === 0 || icon.offsetHeight === 0) {
-                        // Icon is not visible, show fallback
-                        const fallback = icon.nextElementSibling;
-                        if (fallback && fallback.classList.contains('icon-fallback')) {
-                            fallback.style.display = 'block';
-                            icon.style.display = 'none';
-                        }
-                    }
-                }, 1000);
-            });
-            
-            // Load discount settings from localStorage
-            loadDiscountSettings();
-        });
-        
-        // Global variables to store rank information
-        let selectedRank = '';
-        let selectedPrice = '';
-        let selectedOriginalPrice = 0;
-        
-        // Get user data from localStorage
-        function getCurrentUser() {
-            const userData = localStorage.getItem('kalwiUser');
-            return userData ? JSON.parse(userData) : null;
-        }
-
-        // Buy rank function
-        function buyRank(rank, price, originalPrice) {
-            const currentUser = getCurrentUser();
-            
-            if (!currentUser) {
-                document.getElementById('loginRequired').style.display = 'flex';
-                return;
-            }
-            
-            // Store selected rank and price
-            selectedRank = rank;
-            selectedPrice = price;
-            selectedOriginalPrice = originalPrice;
-            
-            // Show contact selection modal
-            document.getElementById('contactModal').style.display = 'flex';
-        }
-
-        // Send to WhatsApp function
-        function sendToWhatsApp(phoneNumber) {
-            const currentUser = getCurrentUser();
-            
-            if (!currentUser) {
-                document.getElementById('loginRequired').style.display = 'flex';
-                closeContactModal();
-                return;
-            }
-            
-            // Format message for WhatsApp
-            const message = `*Beli Rank*\nHarga: ${selectedPrice}\nNickname: ${currentUser.displayName}\nRank: ${selectedRank}`;
-            const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
-            
-            // Close modal
-            closeContactModal();
-            
-            // Open WhatsApp
-            window.open(whatsappUrl, '_blank');
-        }
-
-        // Close contact modal
-        function closeContactModal() {
-            document.getElementById('contactModal').style.display = 'none';
-        }
-
-        // Close login required modal
-        document.getElementById('loginRequired').addEventListener('click', function(e) {
-            if (e.target === this) {
-                this.style.display = 'none';
-            }
-        });
-
-        // Close contact modal when clicking outside
-        document.getElementById('contactModal').addEventListener('click', function(e) {
-            if (e.target === this) {
-                closeContactModal();
-            }
-        });
-
-        // Admin Panel Functions
-        function openAdminPanel() {
-            document.getElementById('adminPanel').style.display = 'flex';
-            
-            // Load current discount settings if available
-            const discountSettings = JSON.parse(localStorage.getItem('discountSettings') || '{}');
-            if (discountSettings.active) {
-                document.getElementById('discountPercentage').value = discountSettings.percentage || 0;
-                document.getElementById('discountExpiryDate').value = discountSettings.expiryDate || '';
-            }
-        }
-
-        function closeAdminPanel() {
-            document.getElementById('adminPanel').style.display = 'none';
-        }
-
-        function disableDiscount() {
-            const adminPassword = document.getElementById('adminPassword').value;
-            
-            // Encode input password dan bandingkan dengan yang tersimpan
-            const inputEncoded = _0x1a2b(adminPassword);
-            
-            if (inputEncoded !== _0x5a6d) {
-                showNotification('Password admin salah!', 'error');
-                return;
-            }
-            
-            // Disable discount
-            const discountSettings = {
-                active: false,
-                percentage: 0,
-                expiryDate: ''
-            };
-            
-            localStorage.setItem('discountSettings', JSON.stringify(discountSettings));
-            
-            // Update UI
-            updateDiscountUI();
-            
-            // Show notification
-            showNotification('Diskon berhasil dinonaktifkan!');
-            
-            // Close admin panel
-            closeAdminPanel();
-        }
-
-        function loadDiscountSettings() {
-            const discountSettings = JSON.parse(localStorage.getItem('discountSettings') || '{}');
-            updateDiscountUI();
-        }
-
-        function updateDiscountUI() {
-            const discountSettings = JSON.parse(localStorage.getItem('discountSettings') || '{}');
-            const discountBanner = document.getElementById('discountBanner');
-            const discountExpiry = document.getElementById('discountExpiry');
-            
-            if (discountSettings.active && discountSettings.expiryDate) {
-                const expiryDate = new Date(discountSettings.expiryDate);
-                const now = new Date();
-                
-                if (now < expiryDate) {
-                    // Discount is still active
-                    discountBanner.classList.add('active');
-                    
-                    // Format expiry date
-                    const options = { 
-                        year: 'numeric', 
-                        month: 'long', 
-                        day: 'numeric', 
-                        hour: '2-digit', 
-                        minute: '2-digit' 
-                    };
-                    discountExpiry.textContent = `Berlaku sampai: ${expiryDate.toLocaleDateString('id-ID', options)}`;
-                    
-                    // Apply discount to all ranks
-                    applyDiscount(discountSettings.percentage);
-                } else {
-                    // Discount has expired
-                    discountSettings.active = false;
-                    localStorage.setItem('discountSettings', JSON.stringify(discountSettings));
-                    discountBanner.classList.remove('active');
-                    resetDiscount();
-                }
-            } else {
-                // Discount is not active
-                discountBanner.classList.remove('active');
-                resetDiscount();
-            }
-        }
-
-        function applyDiscount(percentage) {
-            const ranks = ['bronze', 'silver', 'gold', 'platinum', 'diamond', 'master', 'king'];
-            
-            ranks.forEach(rank => {
-                const originalPriceElement = document.getElementById(`${rank}OriginalPrice`);
-                const priceElement = document.getElementById(`${rank}Price`);
-                const discountBadgeElement = document.getElementById(`${rank}Discount`);
-                const rankCard = document.querySelector(`.rank-card.${rank}`);
-                
-                if (rankCard && originalPriceElement && priceElement && discountBadgeElement) {
-                    const originalPrice = parseInt(rankCard.dataset.price);
-                    const discountAmount = Math.floor(originalPrice * (percentage / 100));
-                    const discountedPrice = originalPrice - discountAmount;
-                    
-                    // Update UI
-                    originalPriceElement.textContent = `Rp ${originalPrice.toLocaleString('id-ID')}`;
-                    originalPriceElement.classList.add('active');
-                    priceElement.textContent = `Rp ${discountedPrice.toLocaleString('id-ID')}`;
-                    discountBadgeElement.textContent = `${percentage}%`;
-                    discountBadgeElement.classList.add('active');
-                }
-            });
-        }
-
-        function resetDiscount() {
-            const ranks = ['bronze', 'silver', 'gold', 'platinum', 'diamond', 'master', 'king'];
-            
-            ranks.forEach(rank => {
-                const originalPriceElement = document.getElementById(`${rank}OriginalPrice`);
-                const priceElement = document.getElementById(`${rank}Price`);
-                const discountBadgeElement = document.getElementById(`${rank}Discount`);
-                
-                if (originalPriceElement && priceElement && discountBadgeElement) {
-                    const rankCard = document.querySelector(`.rank-card.${rank}`);
-                    const originalPrice = parseInt(rankCard.dataset.price);
-                    
-                    // Reset UI
-                    originalPriceElement.classList.remove('active');
-                    priceElement.textContent = `Rp ${originalPrice.toLocaleString('id-ID')}`;
-                    discountBadgeElement.textContent = '0%';
-                    discountBadgeElement.classList.remove('active');
-                }
-            });
-        }
-
-        // Handle discount form submission
-        document.getElementById('discountForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            const discountPercentage = parseInt(document.getElementById('discountPercentage').value);
-            const discountExpiryDate = document.getElementById('discountExpiryDate').value;
-            const adminPassword = document.getElementById('adminPassword').value;
-            
-            // Encode input password dan bandingkan dengan yang tersimpan
-            const inputEncoded = _0x1a2b(adminPassword);
-            
-            if (inputEncoded !== _0x5a6d) {
-                showNotification('Password admin salah!', 'error');
-                return;
-            }
-            
-            // Validate discount percentage
-            if (discountPercentage < 0 || discountPercentage > 100) {
-                showNotification('Persentase diskon harus antara 0-100%', 'error');
-                return;
-            }
-            
-            // Validate expiry date
-            const expiryDate = new Date(discountExpiryDate);
-            const now = new Date();
-            
-            if (expiryDate <= now) {
-                showNotification('Tanggal kedaluwarsa harus di masa depan', 'error');
-                return;
-            }
-            
-            // Save discount settings
-            const discountSettings = {
-                active: true,
-                percentage: discountPercentage,
-                expiryDate: discountExpiryDate
-            };
-            
-            localStorage.setItem('discountSettings', JSON.stringify(discountSettings));
-            
-            // Update UI
-            updateDiscountUI();
-            
-            // Show notification
-            showNotification(`Diskon ${discountPercentage}% berhasil diaktifkan!`);
-            
-            // Close admin panel
-            closeAdminPanel();
-        });
-
-        // Close admin panel when clicking outside
-        document.getElementById('adminPanel').addEventListener('click', function(e) {
-            if (e.target === this) {
-                closeAdminPanel();
-            }
-        });
-
-        // Show notification function
-        function showNotification(message, type = 'success') {
-            const notification = document.createElement('div');
-            notification.className = 'notification';
-            notification.textContent = message;
-            
-            if (type === 'error') {
-                notification.style.background = '#e74c3c';
-            }
-            
-            document.body.appendChild(notification);
-            
-            setTimeout(() => {
-                notification.remove();
-            }, 3000);
-        }
-    </script>
+<header>
+<div class=container>
+<nav class=navbar>
+<a href=index.html class=logo>
+<div class=logo-icon>
+<i class="fas fa-crown"></i>
+</div>
+Minekings Server
+</a>
+<div>
+<a href=index.html class=back-btn>
+<i class="fas fa-arrow-left"></i>
+Kembali
+</a>
+<button class=admin-btn onclick=openAdminPanel()>
+<i class="fas fa-cog"></i>
+Admin Panel
+</button>
+</div>
+</nav>
+</div>
+</header>
+<section class=ranks-section>
+<div class=container>
+<div class=section-header>
+<h1>Server Ranks</h1>
+<p>Pilih rank yang sesuai dengan kebutuhan Anda dan nikmati fitur-fitur eksklusif di server kami</p>
+</div>
+<div class=discount-banner id=discountBanner>
+<h2><i class="fas fa-tags"></i> PROMO DISKON!</h2>
+<p>Dapatkan diskon khusus untuk semua pembelian rank server kami!</p>
+<div class=discount-expiry id=discountExpiry></div>
+</div>
+<div class=ranks-grid>
+<div class="rank-card bronze" data-price=15000>
+<div class=discount-badge id=bronzeDiscount>0%</div>
+<div class=rank-icon>
+<i class="fas fa-hammer"></i>
+<span class=icon-fallback>JWR</span>
+</div>
+<h3 class=rank-name>MINE JAWARA</h3>
+<div class=rank-price-container>
+<div class="rank-price original" id=bronzeOriginalPrice>Rp 15.000</div>
+<div class=rank-price id=bronzePrice>Rp 15.000</div>
+</div>
+<ul class=rank-features>
+<li><i class="fas fa-check"></i> Fly Mode</li>
+<li><i class="fas fa-check"></i> 3 Homes</li>
+<li><i class="fas fa-check"></i> Nickname Color</li>
+<li><i class="fas fa-check"></i> Priority Join</li>
+</ul>
+<button class=buy-rank-btn onclick='buyRank("MINE JAWARA","15K",15e3)'>
+<i class="fas fa-shopping-cart"></i> Beli Rank
+</button>
+</div>
+<div class="rank-card silver" data-price=30000>
+<div class=discount-badge id=silverDiscount>0%</div>
+<div class=rank-icon>
+<i class="fas fa-fist-raised"></i>
+<span class=icon-fallback>JGN</span>
+</div>
+<h3 class=rank-name>MINE JAGOAN</h3>
+<div class=rank-price-container>
+<div class="rank-price original" id=silverOriginalPrice>Rp 30.000</div>
+<div class=rank-price id=silverPrice>Rp 30.000</div>
+</div>
+<ul class=rank-features>
+<li><i class="fas fa-check"></i> Semua fitur MINE JAWARA</li>
+<li><i class="fas fa-check"></i> 5 Homes</li>
+<li><i class="fas fa-check"></i> /hat Command</li>
+<li><i class="fas fa-check"></i> /workbench</li>
+</ul>
+<button class=buy-rank-btn onclick='buyRank("MINE JAGOAN","30K",3e4)'>
+<i class="fas fa-shopping-cart"></i> Beli Rank
+</button>
+</div>
+<div class="rank-card gold" data-price=45000>
+<div class=discount-badge id=goldDiscount>0%</div>
+<div class=rank-icon>
+<i class="fas fa-shield-alt"></i>
+<span class=icon-fallback>JUGN</span>
+</div>
+<h3 class=rank-name>MINE JURAGAN</h3>
+<div class=rank-price-container>
+<div class="rank-price original" id=goldOriginalPrice>Rp 45.000</div>
+<div class=rank-price id=goldPrice>Rp 45.000</div>
+</div>
+<ul class=rank-features>
+<li><i class="fas fa-check"></i> Semua fitur MINE JAGOAN+</li>
+<li><i class="fas fa-check"></i> 10 Homes</li>
+<li><i class="fas fa-check"></i> /echest</li>
+<li><i class="fas fa-check"></i> /feed</li>
+</ul>
+<button class=buy-rank-btn onclick='buyRank("MINE JURAGAN","45K",45e3)'>
+<i class="fas fa-shopping-cart"></i> Beli Rank
+</button>
+</div>
+<div class="rank-card platinum" data-price=60000>
+<div class=discount-badge id=platinumDiscount>0%</div>
+<div class=rank-icon>
+<i class="fas fa-hard-hat"></i>
+<span class=icon-fallback>VTRN</span>
+</div>
+<h3 class=rank-name>MINE VETERAN</h3>
+<div class=rank-price-container>
+<div class="rank-price original" id=platinumOriginalPrice>Rp 60.000</div>
+<div class=rank-price id=platinumPrice>Rp 60.000</div>
+</div>
+<ul class=rank-features>
+<li><i class="fas fa-check"></i> Semua fitur MINE JURAGAN</li>
+<li><i class="fas fa-check"></i> 15 Homes</li>
+<li><i class="fas fa-check"></i> /heal</li>
+<li><i class="fas fa-check"></i> /repair</li>
+</ul>
+<button class=buy-rank-btn onclick='buyRank("MINE VETERAN","60K",6e4)'>
+<i class="fas fa-shopping-cart"></i> Beli Rank
+</button>
+</div>
+<div class="rank-card diamond" data-price=75000>
+<div class=discount-badge id=diamondDiscount>0%</div>
+<div class=rank-icon>
+<i class="fas fa-gem"></i>
+<span class=icon-fallback>SLTN</span>
+</div>
+<h3 class=rank-name>MINE SULTAN</h3>
+<div class=rank-price-container>
+<div class="rank-price original" id=diamondOriginalPrice>Rp 75.000</div>
+<div class=rank-price id=diamondPrice>Rp 75.000</div>
+</div>
+<ul class=rank-features>
+<li><i class="fas fa-check"></i> Semua fitur MINE VETERAN</li>
+<li><i class="fas fa-check"></i> 25 Homes</li>
+<li><i class="fas fa-check"></i> /near</li>
+<li><i class="fas fa-check"></i> /ptime</li>
+</ul>
+<button class=buy-rank-btn onclick='buyRank("MINE SULTAN","75K",75e3)'>
+<i class="fas fa-shopping-cart"></i> Beli Rank
+</button>
+</div>
+<div class="rank-card master" data-price=90000>
+<div class=discount-badge id=masterDiscount>0%</div>
+<div class=rank-icon>
+<i class="fas fa-dragon"></i>
+<span class=icon-fallback>SPUH</span>
+</div>
+<h3 class=rank-name>MINE SEPUH</h3>
+<div class=rank-price-container>
+<div class="rank-price original" id=masterOriginalPrice>Rp 90.000</div>
+<div class=rank-price id=masterPrice>Rp 90.000</div>
+</div>
+<ul class=rank-features>
+<li><i class="fas fa-check"></i> Semua fitur MINE SULTAN</li>
+<li><i class="fas fa-check"></i> 50 Homes</li>
+<li><i class="fas fa-check"></i> /fly speed</li>
+<li><i class="fas fa-check"></i> /god mode</li>
+</ul>
+<button class=buy-rank-btn onclick='buyRank("MINE SEPUH","90K",9e4)'>
+<i class="fas fa-shopping-cart"></i> Beli Rank
+</button>
+</div>
+<div class="rank-card king" data-price=100000>
+<div class=discount-badge id=kingDiscount>0%</div>
+<div class=rank-icon>
+<i class="fas fa-chess-king"></i>
+<span class=icon-fallback>KINGS</span>
+</div>
+<h3 class=rank-name>MINE KINGS</h3>
+<div class=rank-price-container>
+<div class="rank-price original" id=kingOriginalPrice>Rp 100.000</div>
+<div class=rank-price id=kingPrice>Rp 100.000</div>
+</div>
+<ul class=rank-features>
+<li><i class="fas fa-check"></i> Semua fitur MINE SEPUH</li>
+<li><i class="fas fa-check"></i> 100 Homes</li>
+<li><i class="fas fa-check"></i> /vanish</li>
+<li><i class="fas fa-check"></i> Custom Prefix</li>
+</ul>
+<button class=buy-rank-btn onclick='buyRank("MINE KINGS","100K",1e5)'>
+<i class="fas fa-shopping-cart"></i> Beli Rank
+</button>
+</div>
+</div>
+</div>
+</section>
+<div class=login-required id=loginRequired>
+<div class=login-required-content>
+<i class="fas fa-user-lock" style=font-size:48px;color:var(--primary);margin-bottom:20px></i>
+<h3>Login Diperlukan</h3>
+<p>Anda harus login terlebih dahulu untuk membeli rank</p>
+<a href=index.html class=login-btn>Login Sekarang</a>
+</div>
+</div>
+<div class=contact-modal id=contactModal>
+<div class=contact-modal-content>
+<h3><i class="fas fa-phone-alt"></i> Pilih Kontak</h3>
+<p>Silakan pilih salah satu kontak untuk melakukan pembelian</p>
+<div class=contact-options>
+<div class=contact-option onclick='sendToWhatsApp("6287755430203")'>
+<i class="fab fa-whatsapp"></i>
+<div class=contact-info>
+<div class=contact-name>AdmudCraft</div>
+<div class=contact-number>6287755430203</div>
+</div>
+</div>
+<div class=contact-option onclick='sendToWhatsApp("6285810688736")'>
+<i class="fab fa-whatsapp"></i>
+<div class=contact-info>
+<div class=contact-name>Aunzz</div>
+<div class=contact-number>6285810688736</div>
+</div>
+</div>
+</div>
+<button class=cancel-btn onclick=closeContactModal()>Batal</button>
+</div>
+</div>
+<div class=admin-panel id=adminPanel>
+<div class=admin-panel-content>
+<h2><i class="fas fa-cog"></i> Admin Panel - Diskon Rank</h2>
+<form class=admin-form id=discountForm>
+<div class=form-group>
+<label for=discountPercentage>Persentase Diskon (%)</label>
+<input type=number id=discountPercentage min=0 max=100 step=1 required>
+</div>
+<div class=form-group>
+<label for=discountExpiryDate>Tanggal Kedaluwarsa</label>
+<input type=datetime-local id=discountExpiryDate required>
+</div>
+<div class=form-group>
+<label for=adminPassword>Password Admin</label>
+<input type=password id=adminPassword required>
+</div>
+<div class=admin-buttons>
+<button type=submit class="admin-btn save-btn">Simpan Diskon</button>
+<button type=button class="admin-btn disable-btn" onclick=disableDiscount()>Nonaktifkan Diskon</button>
+</div>
+</form>
+<button class=close-admin-btn onclick=closeAdminPanel()>Tutup Panel</button>
+</div>
+</div>
+<script>function _0x1a2b(e){return btoa(e)}const _0x5a6d="T25lRm9yQWxs";document.addEventListener("DOMContentLoaded",(function(){document.querySelectorAll(".rank-icon i").forEach((e=>{setTimeout((()=>{const t=window.getComputedStyle(e);if("0"===t.opacity||"hidden"===t.visibility||0===e.offsetWidth||0===e.offsetHeight){const t=e.nextElementSibling;t&&t.classList.contains("icon-fallback")&&(t.style.display="block",e.style.display="none")}}),1e3)})),loadDiscountSettings()}));let selectedRank="",selectedPrice="",selectedOriginalPrice=0;function getCurrentUser(){const e=localStorage.getItem("kalwiUser");return e?JSON.parse(e):null}function buyRank(e,t,n){getCurrentUser()?(selectedRank=e,selectedPrice=t,selectedOriginalPrice=n,document.getElementById("contactModal").style.display="flex"):document.getElementById("loginRequired").style.display="flex"}function sendToWhatsApp(e){const t=getCurrentUser();if(!t)return document.getElementById("loginRequired").style.display="flex",void closeContactModal();const n=`*Beli Rank*\nHarga: ${selectedPrice}\nNickname: ${t.displayName}\nRank: ${selectedRank}`,i=`https://wa.me/${e}?text=${encodeURIComponent(n)}`;closeContactModal(),window.open(i,"_blank")}function closeContactModal(){document.getElementById("contactModal").style.display="none"}function openAdminPanel(){document.getElementById("adminPanel").style.display="flex";const e=JSON.parse(localStorage.getItem("discountSettings")||"{}");e.active&&(document.getElementById("discountPercentage").value=e.percentage||0,document.getElementById("discountExpiryDate").value=e.expiryDate||"")}function closeAdminPanel(){document.getElementById("adminPanel").style.display="none"}function disableDiscount(){if(_0x1a2b(document.getElementById("adminPassword").value)!==_0x5a6d)return void showNotification("Password admin salah!","error");localStorage.setItem("discountSettings",JSON.stringify({active:!1,percentage:0,expiryDate:""})),updateDiscountUI(),showNotification("Diskon berhasil dinonaktifkan!"),closeAdminPanel()}function loadDiscountSettings(){JSON.parse(localStorage.getItem("discountSettings")||"{}");updateDiscountUI()}function updateDiscountUI(){const e=JSON.parse(localStorage.getItem("discountSettings")||"{}"),t=document.getElementById("discountBanner"),n=document.getElementById("discountExpiry");if(e.active&&e.expiryDate){const i=new Date(e.expiryDate);if(new Date<i){t.classList.add("active");const o={year:"numeric",month:"long",day:"numeric",hour:"2-digit",minute:"2-digit"};n.textContent=`Berlaku sampai: ${i.toLocaleDateString("id-ID",o)}`,applyDiscount(e.percentage)}else e.active=!1,localStorage.setItem("discountSettings",JSON.stringify(e)),t.classList.remove("active"),resetDiscount()}else t.classList.remove("active"),resetDiscount()}function applyDiscount(e){["bronze","silver","gold","platinum","diamond","master","king"].forEach((t=>{const n=document.getElementById(`${t}OriginalPrice`),i=document.getElementById(`${t}Price`),o=document.getElementById(`${t}Discount`),a=document.querySelector(`.rank-card.${t}`);if(a&&n&&i&&o){const t=parseInt(a.dataset.price),c=t-Math.floor(t*(e/100));n.textContent=`Rp ${t.toLocaleString("id-ID")}`,n.classList.add("active"),i.textContent=`Rp ${c.toLocaleString("id-ID")}`,o.textContent=`${e}%`,o.classList.add("active")}}))}function resetDiscount(){["bronze","silver","gold","platinum","diamond","master","king"].forEach((e=>{const t=document.getElementById(`${e}OriginalPrice`),n=document.getElementById(`${e}Price`),i=document.getElementById(`${e}Discount`);if(t&&n&&i){const o=document.querySelector(`.rank-card.${e}`),a=parseInt(o.dataset.price);t.classList.remove("active"),n.textContent=`Rp ${a.toLocaleString("id-ID")}`,i.textContent="0%",i.classList.remove("active")}}))}function showNotification(e,t="success"){const n=document.createElement("div");n.className="notification",n.textContent=e,"error"===t&&(n.style.background="#e74c3c"),document.body.appendChild(n),setTimeout((()=>{n.remove()}),3e3)}document.getElementById("loginRequired").addEventListener("click",(function(e){e.target===this&&(this.style.display="none")})),document.getElementById("contactModal").addEventListener("click",(function(e){e.target===this&&closeContactModal()})),document.getElementById("discountForm").addEventListener("submit",(function(e){e.preventDefault();const t=parseInt(document.getElementById("discountPercentage").value),n=document.getElementById("discountExpiryDate").value;if(_0x1a2b(document.getElementById("adminPassword").value)!==_0x5a6d)return void showNotification("Password admin salah!","error");if(t<0||t>100)return void showNotification("Persentase diskon harus antara 0-100%","error");if(new Date(n)<=new Date)return void showNotification("Tanggal kedaluwarsa harus di masa depan","error");const i={active:!0,percentage:t,expiryDate:n};localStorage.setItem("discountSettings",JSON.stringify(i)),updateDiscountUI(),showNotification(`Diskon ${t}% berhasil diaktifkan!`),closeAdminPanel()})),document.getElementById("adminPanel").addEventListener("click",(function(e){e.target===this&&closeAdminPanel()}))</script>
 </body>
 </html>
