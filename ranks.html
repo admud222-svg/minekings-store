@@ -30,6 +30,7 @@
             --diamond: #b9f2ff;
             --master: #ff00ff;
             --king: #ff4500;
+            --discount: #ff4757;
         }
 
         body {
@@ -148,6 +149,28 @@
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
         }
 
+        .admin-btn {
+            background: rgba(255, 71, 87, 0.2);
+            border: 1px solid rgba(255, 71, 87, 0.3);
+            color: var(--discount);
+            padding: 10px 18px;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 500;
+            margin-left: 10px;
+        }
+
+        .admin-btn:hover {
+            background: rgba(255, 71, 87, 0.3);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 71, 87, 0.2);
+        }
+
         /* Ranks Section */
         .ranks-section {
             padding: 60px 0;
@@ -190,6 +213,59 @@
             margin-top: 20px;
         }
 
+        .discount-banner {
+            background: linear-gradient(135deg, var(--discount), #ff6b81);
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 30px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(255, 71, 87, 0.3);
+            position: relative;
+            overflow: hidden;
+            display: none;
+        }
+
+        .discount-banner.active {
+            display: block;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(255, 71, 87, 0.4); }
+            70% { box-shadow: 0 0 0 15px rgba(255, 71, 87, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(255, 71, 87, 0); }
+        }
+
+        .discount-banner::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transform: rotate(45deg);
+            animation: shine 3s infinite;
+        }
+
+        .discount-banner h2 {
+            font-size: 28px;
+            margin-bottom: 10px;
+            color: var(--white);
+        }
+
+        .discount-banner p {
+            font-size: 16px;
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        .discount-expiry {
+            font-size: 14px;
+            margin-top: 10px;
+            color: rgba(255, 255, 255, 0.8);
+            font-style: italic;
+        }
+
         .ranks-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
@@ -212,6 +288,25 @@
             transform: translateY(-10px);
             background: rgba(30, 41, 59, 0.9);
             box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .discount-badge {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: var(--discount);
+            color: var(--white);
+            font-weight: 700;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 14px;
+            display: none;
+            z-index: 1;
+        }
+
+        .discount-badge.active {
+            display: block;
+            animation: pulse 2s infinite;
         }
 
         /* Rank-specific styles */
@@ -346,12 +441,28 @@
             color: var(--king);
         }
 
+        .rank-price-container {
+            position: relative;
+            margin-bottom: 20px;
+        }
+
         .rank-price {
             font-size: 28px;
             font-weight: 700;
-            margin-bottom: 20px;
             color: var(--white);
             position: relative;
+            display: inline-block;
+        }
+
+        .rank-price.original {
+            font-size: 20px;
+            text-decoration: line-through;
+            color: var(--gray);
+            margin-right: 10px;
+            display: none;
+        }
+
+        .rank-price.original.active {
             display: inline-block;
         }
 
@@ -665,6 +776,124 @@
             background: rgba(255, 255, 255, 0.2);
         }
 
+        /* Admin Panel Modal */
+        .admin-panel {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 10000;
+            backdrop-filter: blur(5px);
+        }
+
+        .admin-panel-content {
+            background: var(--darker);
+            padding: 40px;
+            border-radius: 20px;
+            max-width: 600px;
+            width: 90%;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            animation: modalFadeIn 0.3s ease;
+        }
+
+        .admin-panel h2 {
+            color: var(--discount);
+            margin-bottom: 20px;
+            font-size: 28px;
+            font-weight: 600;
+            text-align: center;
+        }
+
+        .admin-form {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .form-group label {
+            font-weight: 600;
+            color: var(--white);
+        }
+
+        .form-group input, .form-group select {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            padding: 12px;
+            color: var(--white);
+            font-size: 16px;
+        }
+
+        .form-group input:focus, .form-group select:focus {
+            outline: none;
+            border-color: var(--discount);
+            box-shadow: 0 0 0 2px rgba(255, 71, 87, 0.2);
+        }
+
+        .admin-buttons {
+            display: flex;
+            gap: 15px;
+            margin-top: 10px;
+        }
+
+        .admin-btn {
+            flex: 1;
+            padding: 12px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: none;
+        }
+
+        .save-btn {
+            background: linear-gradient(135deg, var(--discount), #ff6b81);
+            color: var(--white);
+        }
+
+        .save-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 71, 87, 0.3);
+        }
+
+        .disable-btn {
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--white);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .disable-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .close-admin-btn {
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--white);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 500;
+            margin-top: 20px;
+        }
+
+        .close-admin-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
         /* Notification */
         .notification {
             position: fixed;
@@ -729,6 +958,11 @@
             .logo i {
                 font-size: 20px;
             }
+
+            .admin-btn {
+                padding: 8px 12px;
+                font-size: 14px;
+            }
         }
 
         @media (max-width: 480px) {
@@ -750,6 +984,10 @@
                 height: 70px;
                 font-size: 28px;
             }
+
+            .admin-panel-content {
+                padding: 30px 20px;
+            }
         }
     </style>
 </head>
@@ -764,10 +1002,16 @@
                     </div>
                     Minekings Server
                 </a>
-                <a href="index.html" class="back-btn">
-                    <i class="fas fa-arrow-left"></i>
-                    Kembali
-                </a>
+                <div>
+                    <a href="index.html" class="back-btn">
+                        <i class="fas fa-arrow-left"></i>
+                        Kembali
+                    </a>
+                    <button class="admin-btn" onclick="openAdminPanel()">
+                        <i class="fas fa-cog"></i>
+                        Admin Panel
+                    </button>
+                </div>
             </nav>
         </div>
     </header>
@@ -779,129 +1023,165 @@
                 <h1>Server Ranks</h1>
                 <p>Pilih rank yang sesuai dengan kebutuhan Anda dan nikmati fitur-fitur eksklusif di server kami</p>
             </div>
+            
+            <!-- Discount Banner -->
+            <div class="discount-banner" id="discountBanner">
+                <h2><i class="fas fa-tags"></i> PROMO DISKON!</h2>
+                <p>Dapatkan diskon khusus untuk semua pembelian rank server kami!</p>
+                <div class="discount-expiry" id="discountExpiry"></div>
+            </div>
+            
             <div class="ranks-grid">
-                <div class="rank-card bronze">
+                <div class="rank-card bronze" data-price="15000">
+                    <div class="discount-badge" id="bronzeDiscount">0%</div>
                     <div class="rank-icon">
                         <i class="fas fa-hammer"></i>
                         <span class="icon-fallback">JWR</span>
                     </div>
                     <h3 class="rank-name">MINE JAWARA</h3>
-                    <div class="rank-price">Rp 15.000</div>
+                    <div class="rank-price-container">
+                        <div class="rank-price original" id="bronzeOriginalPrice">Rp 15.000</div>
+                        <div class="rank-price" id="bronzePrice">Rp 15.000</div>
+                    </div>
                     <ul class="rank-features">
                         <li><i class="fas fa-check"></i> Fly Mode</li>
                         <li><i class="fas fa-check"></i> 3 Homes</li>
                         <li><i class="fas fa-check"></i> Nickname Color</li>
                         <li><i class="fas fa-check"></i> Priority Join</li>
                     </ul>
-                    <button class="buy-rank-btn" onclick="buyRank('MINE JAWARA', '15K')">
+                    <button class="buy-rank-btn" onclick="buyRank('MINE JAWARA', '15K', 15000)">
                         <i class="fas fa-shopping-cart"></i> Beli Rank
                     </button>
                 </div>
 
-                <div class="rank-card silver">
+                <div class="rank-card silver" data-price="30000">
+                    <div class="discount-badge" id="silverDiscount">0%</div>
                     <div class="rank-icon">
                         <i class="fas fa-fist-raised"></i>
                         <span class="icon-fallback">JGN</span>
                     </div>
                     <h3 class="rank-name">MINE JAGOAN</h3>
-                    <div class="rank-price">Rp 30.000</div>
+                    <div class="rank-price-container">
+                        <div class="rank-price original" id="silverOriginalPrice">Rp 30.000</div>
+                        <div class="rank-price" id="silverPrice">Rp 30.000</div>
+                    </div>
                     <ul class="rank-features">
                         <li><i class="fas fa-check"></i> Semua fitur MINE JAWARA</li>
                         <li><i class="fas fa-check"></i> 5 Homes</li>
                         <li><i class="fas fa-check"></i> /hat Command</li>
                         <li><i class="fas fa-check"></i> /workbench</li>
                     </ul>
-                    <button class="buy-rank-btn" onclick="buyRank('MINE JAGOAN', '30K')">
+                    <button class="buy-rank-btn" onclick="buyRank('MINE JAGOAN', '30K', 30000)">
                         <i class="fas fa-shopping-cart"></i> Beli Rank
                     </button>
                 </div>
 
-                <div class="rank-card gold">
+                <div class="rank-card gold" data-price="45000">
+                    <div class="discount-badge" id="goldDiscount">0%</div>
                     <div class="rank-icon">
                         <i class="fas fa-shield-alt"></i>
                         <span class="icon-fallback">JUGN</span>
                     </div>
                     <h3 class="rank-name">MINE JURAGAN</h3>
-                    <div class="rank-price">Rp 45.000</div>
+                    <div class="rank-price-container">
+                        <div class="rank-price original" id="goldOriginalPrice">Rp 45.000</div>
+                        <div class="rank-price" id="goldPrice">Rp 45.000</div>
+                    </div>
                     <ul class="rank-features">
                         <li><i class="fas fa-check"></i> Semua fitur MINE JAGOAN+</li>
                         <li><i class="fas fa-check"></i> 10 Homes</li>
                         <li><i class="fas fa-check"></i> /echest</li>
                         <li><i class="fas fa-check"></i> /feed</li>
                     </ul>
-                    <button class="buy-rank-btn" onclick="buyRank('MINE JURAGAN', '45K')">
+                    <button class="buy-rank-btn" onclick="buyRank('MINE JURAGAN', '45K', 45000)">
                         <i class="fas fa-shopping-cart"></i> Beli Rank
                     </button>
                 </div>
 
-                <div class="rank-card platinum">
+                <div class="rank-card platinum" data-price="60000">
+                    <div class="discount-badge" id="platinumDiscount">0%</div>
                     <div class="rank-icon">
                         <i class="fas fa-hard-hat"></i>
                         <span class="icon-fallback">VTRN</span>
                     </div>
                     <h3 class="rank-name">MINE VETERAN</h3>
-                    <div class="rank-price">Rp 60.000</div>
+                    <div class="rank-price-container">
+                        <div class="rank-price original" id="platinumOriginalPrice">Rp 60.000</div>
+                        <div class="rank-price" id="platinumPrice">Rp 60.000</div>
+                    </div>
                     <ul class="rank-features">
                         <li><i class="fas fa-check"></i> Semua fitur MINE JURAGAN</li>
                         <li><i class="fas fa-check"></i> 15 Homes</li>
                         <li><i class="fas fa-check"></i> /heal</li>
                         <li><i class="fas fa-check"></i> /repair</li>
                     </ul>
-                    <button class="buy-rank-btn" onclick="buyRank('MINE VETERAN', '60K')">
+                    <button class="buy-rank-btn" onclick="buyRank('MINE VETERAN', '60K', 60000)">
                         <i class="fas fa-shopping-cart"></i> Beli Rank
                     </button>
                 </div>
 
-                <div class="rank-card diamond">
+                <div class="rank-card diamond" data-price="75000">
+                    <div class="discount-badge" id="diamondDiscount">0%</div>
                     <div class="rank-icon">
                         <i class="fas fa-gem"></i>
                         <span class="icon-fallback">SLTN</span>
                     </div>
                     <h3 class="rank-name">MINE SULTAN</h3>
-                    <div class="rank-price">Rp 75.000</div>
+                    <div class="rank-price-container">
+                        <div class="rank-price original" id="diamondOriginalPrice">Rp 75.000</div>
+                        <div class="rank-price" id="diamondPrice">Rp 75.000</div>
+                    </div>
                     <ul class="rank-features">
                         <li><i class="fas fa-check"></i> Semua fitur MINE VETERAN</li>
                         <li><i class="fas fa-check"></i> 25 Homes</li>
                         <li><i class="fas fa-check"></i> /near</li>
                         <li><i class="fas fa-check"></i> /ptime</li>
                     </ul>
-                    <button class="buy-rank-btn" onclick="buyRank('MINE SULTAN', '75K')">
+                    <button class="buy-rank-btn" onclick="buyRank('MINE SULTAN', '75K', 75000)">
                         <i class="fas fa-shopping-cart"></i> Beli Rank
                     </button>
                 </div>
 
-                <div class="rank-card master">
+                <div class="rank-card master" data-price="90000">
+                    <div class="discount-badge" id="masterDiscount">0%</div>
                     <div class="rank-icon">
                         <i class="fas fa-dragon"></i>
                         <span class="icon-fallback">SPUH</span>
                     </div>
                     <h3 class="rank-name">MINE SEPUH</h3>
-                    <div class="rank-price">Rp 90.000</div>
+                    <div class="rank-price-container">
+                        <div class="rank-price original" id="masterOriginalPrice">Rp 90.000</div>
+                        <div class="rank-price" id="masterPrice">Rp 90.000</div>
+                    </div>
                     <ul class="rank-features">
                         <li><i class="fas fa-check"></i> Semua fitur MINE SULTAN</li>
                         <li><i class="fas fa-check"></i> 50 Homes</li>
                         <li><i class="fas fa-check"></i> /fly speed</li>
                         <li><i class="fas fa-check"></i> /god mode</li>
                     </ul>
-                    <button class="buy-rank-btn" onclick="buyRank('MINE SEPUH', '90K')">
+                    <button class="buy-rank-btn" onclick="buyRank('MINE SEPUH', '90K', 90000)">
                         <i class="fas fa-shopping-cart"></i> Beli Rank
                     </button>
                 </div>
 
-                <div class="rank-card king">
+                <div class="rank-card king" data-price="100000">
+                    <div class="discount-badge" id="kingDiscount">0%</div>
                     <div class="rank-icon">
                         <i class="fas fa-chess-king"></i>
                         <span class="icon-fallback">KINGS</span>
                     </div>
                     <h3 class="rank-name">MINE KINGS</h3>
-                    <div class="rank-price">Rp 100.000</div>
+                    <div class="rank-price-container">
+                        <div class="rank-price original" id="kingOriginalPrice">Rp 100.000</div>
+                        <div class="rank-price" id="kingPrice">Rp 100.000</div>
+                    </div>
                     <ul class="rank-features">
                         <li><i class="fas fa-check"></i> Semua fitur MINE SEPUH</li>
                         <li><i class="fas fa-check"></i> 100 Homes</li>
                         <li><i class="fas fa-check"></i> /vanish</li>
                         <li><i class="fas fa-check"></i> Custom Prefix</li>
                     </ul>
-                    <button class="buy-rank-btn" onclick="buyRank('MINE KINGS', '100K')">
+                    <button class="buy-rank-btn" onclick="buyRank('MINE KINGS', '100K', 100000)">
                         <i class="fas fa-shopping-cart"></i> Beli Rank
                     </button>
                 </div>
@@ -947,7 +1227,44 @@
         </div>
     </div>
 
+    <!-- Admin Panel Modal -->
+    <div class="admin-panel" id="adminPanel">
+        <div class="admin-panel-content">
+            <h2><i class="fas fa-cog"></i> Admin Panel - Diskon Rank</h2>
+            <form class="admin-form" id="discountForm">
+                <div class="form-group">
+                    <label for="discountPercentage">Persentase Diskon (%)</label>
+                    <input type="number" id="discountPercentage" min="0" max="100" step="1" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="discountExpiryDate">Tanggal Kedaluwarsa</label>
+                    <input type="datetime-local" id="discountExpiryDate" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="adminPassword">Password Admin</label>
+                    <input type="password" id="adminPassword" required>
+                </div>
+                
+                <div class="admin-buttons">
+                    <button type="submit" class="admin-btn save-btn">Simpan Diskon</button>
+                    <button type="button" class="admin-btn disable-btn" onclick="disableDiscount()">Nonaktifkan Diskon</button>
+                </div>
+            </form>
+            
+            <button class="close-admin-btn" onclick="closeAdminPanel()">Tutup Panel</button>
+        </div>
+    </div>
+
     <script>
+        // Fungsi untuk menyembunyikan password dengan base64
+        function _0x1a2b(str) {
+            return btoa(str);
+        }
+        
+        const _0x5a6d = "T25lRm9yQWxs";
+        
         // Fallback for icons that don't load
         document.addEventListener('DOMContentLoaded', function() {
             const icons = document.querySelectorAll('.rank-icon i');
@@ -966,11 +1283,15 @@
                     }
                 }, 1000);
             });
+            
+            // Load discount settings from localStorage
+            loadDiscountSettings();
         });
         
         // Global variables to store rank information
         let selectedRank = '';
         let selectedPrice = '';
+        let selectedOriginalPrice = 0;
         
         // Get user data from localStorage
         function getCurrentUser() {
@@ -979,7 +1300,7 @@
         }
 
         // Buy rank function
-        function buyRank(rank, price) {
+        function buyRank(rank, price, originalPrice) {
             const currentUser = getCurrentUser();
             
             if (!currentUser) {
@@ -990,6 +1311,7 @@
             // Store selected rank and price
             selectedRank = rank;
             selectedPrice = price;
+            selectedOriginalPrice = originalPrice;
             
             // Show contact selection modal
             document.getElementById('contactModal').style.display = 'flex';
@@ -1006,11 +1328,7 @@
             }
             
             // Format message for WhatsApp
-            const message = 
-            `*Beli Rank*
-            Harga: ${selectedPrice}
-            Nickname: ${currentUser.displayName}
-            Rank: ${selectedRank}`;
+            const message = `*Beli Rank*\nHarga: ${selectedPrice}\nNickname: ${currentUser.displayName}\nRank: ${selectedRank}`;
             const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
             
             // Close modal
@@ -1036,6 +1354,198 @@
         document.getElementById('contactModal').addEventListener('click', function(e) {
             if (e.target === this) {
                 closeContactModal();
+            }
+        });
+
+        // Admin Panel Functions
+        function openAdminPanel() {
+            document.getElementById('adminPanel').style.display = 'flex';
+            
+            // Load current discount settings if available
+            const discountSettings = JSON.parse(localStorage.getItem('discountSettings') || '{}');
+            if (discountSettings.active) {
+                document.getElementById('discountPercentage').value = discountSettings.percentage || 0;
+                document.getElementById('discountExpiryDate').value = discountSettings.expiryDate || '';
+            }
+        }
+
+        function closeAdminPanel() {
+            document.getElementById('adminPanel').style.display = 'none';
+        }
+
+        function disableDiscount() {
+            const adminPassword = document.getElementById('adminPassword').value;
+            
+            // Encode input password dan bandingkan dengan yang tersimpan
+            const inputEncoded = _0x1a2b(adminPassword);
+            
+            if (inputEncoded !== _0x5a6d) {
+                showNotification('Password admin salah!', 'error');
+                return;
+            }
+            
+            // Disable discount
+            const discountSettings = {
+                active: false,
+                percentage: 0,
+                expiryDate: ''
+            };
+            
+            localStorage.setItem('discountSettings', JSON.stringify(discountSettings));
+            
+            // Update UI
+            updateDiscountUI();
+            
+            // Show notification
+            showNotification('Diskon berhasil dinonaktifkan!');
+            
+            // Close admin panel
+            closeAdminPanel();
+        }
+
+        function loadDiscountSettings() {
+            const discountSettings = JSON.parse(localStorage.getItem('discountSettings') || '{}');
+            updateDiscountUI();
+        }
+
+        function updateDiscountUI() {
+            const discountSettings = JSON.parse(localStorage.getItem('discountSettings') || '{}');
+            const discountBanner = document.getElementById('discountBanner');
+            const discountExpiry = document.getElementById('discountExpiry');
+            
+            if (discountSettings.active && discountSettings.expiryDate) {
+                const expiryDate = new Date(discountSettings.expiryDate);
+                const now = new Date();
+                
+                if (now < expiryDate) {
+                    // Discount is still active
+                    discountBanner.classList.add('active');
+                    
+                    // Format expiry date
+                    const options = { 
+                        year: 'numeric', 
+                        month: 'long', 
+                        day: 'numeric', 
+                        hour: '2-digit', 
+                        minute: '2-digit' 
+                    };
+                    discountExpiry.textContent = `Berlaku sampai: ${expiryDate.toLocaleDateString('id-ID', options)}`;
+                    
+                    // Apply discount to all ranks
+                    applyDiscount(discountSettings.percentage);
+                } else {
+                    // Discount has expired
+                    discountSettings.active = false;
+                    localStorage.setItem('discountSettings', JSON.stringify(discountSettings));
+                    discountBanner.classList.remove('active');
+                    resetDiscount();
+                }
+            } else {
+                // Discount is not active
+                discountBanner.classList.remove('active');
+                resetDiscount();
+            }
+        }
+
+        function applyDiscount(percentage) {
+            const ranks = ['bronze', 'silver', 'gold', 'platinum', 'diamond', 'master', 'king'];
+            
+            ranks.forEach(rank => {
+                const originalPriceElement = document.getElementById(`${rank}OriginalPrice`);
+                const priceElement = document.getElementById(`${rank}Price`);
+                const discountBadgeElement = document.getElementById(`${rank}Discount`);
+                const rankCard = document.querySelector(`.rank-card.${rank}`);
+                
+                if (rankCard && originalPriceElement && priceElement && discountBadgeElement) {
+                    const originalPrice = parseInt(rankCard.dataset.price);
+                    const discountAmount = Math.floor(originalPrice * (percentage / 100));
+                    const discountedPrice = originalPrice - discountAmount;
+                    
+                    // Update UI
+                    originalPriceElement.textContent = `Rp ${originalPrice.toLocaleString('id-ID')}`;
+                    originalPriceElement.classList.add('active');
+                    priceElement.textContent = `Rp ${discountedPrice.toLocaleString('id-ID')}`;
+                    discountBadgeElement.textContent = `${percentage}%`;
+                    discountBadgeElement.classList.add('active');
+                }
+            });
+        }
+
+        function resetDiscount() {
+            const ranks = ['bronze', 'silver', 'gold', 'platinum', 'diamond', 'master', 'king'];
+            
+            ranks.forEach(rank => {
+                const originalPriceElement = document.getElementById(`${rank}OriginalPrice`);
+                const priceElement = document.getElementById(`${rank}Price`);
+                const discountBadgeElement = document.getElementById(`${rank}Discount`);
+                
+                if (originalPriceElement && priceElement && discountBadgeElement) {
+                    const rankCard = document.querySelector(`.rank-card.${rank}`);
+                    const originalPrice = parseInt(rankCard.dataset.price);
+                    
+                    // Reset UI
+                    originalPriceElement.classList.remove('active');
+                    priceElement.textContent = `Rp ${originalPrice.toLocaleString('id-ID')}`;
+                    discountBadgeElement.textContent = '0%';
+                    discountBadgeElement.classList.remove('active');
+                }
+            });
+        }
+
+        // Handle discount form submission
+        document.getElementById('discountForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const discountPercentage = parseInt(document.getElementById('discountPercentage').value);
+            const discountExpiryDate = document.getElementById('discountExpiryDate').value;
+            const adminPassword = document.getElementById('adminPassword').value;
+            
+            // Encode input password dan bandingkan dengan yang tersimpan
+            const inputEncoded = _0x1a2b(adminPassword);
+            
+            if (inputEncoded !== _0x5a6d) {
+                showNotification('Password admin salah!', 'error');
+                return;
+            }
+            
+            // Validate discount percentage
+            if (discountPercentage < 0 || discountPercentage > 100) {
+                showNotification('Persentase diskon harus antara 0-100%', 'error');
+                return;
+            }
+            
+            // Validate expiry date
+            const expiryDate = new Date(discountExpiryDate);
+            const now = new Date();
+            
+            if (expiryDate <= now) {
+                showNotification('Tanggal kedaluwarsa harus di masa depan', 'error');
+                return;
+            }
+            
+            // Save discount settings
+            const discountSettings = {
+                active: true,
+                percentage: discountPercentage,
+                expiryDate: discountExpiryDate
+            };
+            
+            localStorage.setItem('discountSettings', JSON.stringify(discountSettings));
+            
+            // Update UI
+            updateDiscountUI();
+            
+            // Show notification
+            showNotification(`Diskon ${discountPercentage}% berhasil diaktifkan!`);
+            
+            // Close admin panel
+            closeAdminPanel();
+        });
+
+        // Close admin panel when clicking outside
+        document.getElementById('adminPanel').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeAdminPanel();
             }
         });
 
