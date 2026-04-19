@@ -28,187 +28,72 @@
             overflow-x: hidden;
         }
 
-        /* --- Header --- */
-        header {
-            padding: 20px;
-            text-align: center;
-        }
+        header { padding: 20px; text-align: center; }
+        h1 { font-family: 'Caveat', cursive; font-size: clamp(2rem, 8vw, 3rem); color: #2c3e50; transform: rotate(-1deg); }
 
-        h1 {
-            font-family: 'Caveat', cursive;
-            font-size: clamp(2rem, 8vw, 3rem);
-            color: #2c3e50;
-            transform: rotate(-1deg);
-        }
-
-        /* --- Dashboard --- */
-        #dashboard {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding: 10px;
-            gap: 20px;
-        }
+        #dashboard { display: flex; flex-direction: column; align-items: center; padding: 10px; gap: 20px; }
 
         .upload-area {
-            width: 100%;
-            max-width: 400px;
-            padding: 20px;
-            border: 3px dashed #b2bec3;
-            border-radius: 15px;
-            background: white;
-            text-align: center;
-            cursor: pointer;
+            width: 100%; max-width: 400px; padding: 20px;
+            border: 3px dashed #b2bec3; border-radius: 15px;
+            background: white; text-align: center; cursor: pointer;
         }
 
-        .project-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-            gap: 15px;
-            width: 100%;
-            max-width: 1000px;
-        }
+        .project-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 15px; width: 100%; max-width: 1000px; }
 
         .sticky-note {
-            aspect-ratio: 1/1;
-            padding: 20px 10px 10px;
-            background: var(--yellow-note);
-            position: relative;
-            box-shadow: 3px 5px 10px rgba(0,0,0,0.1);
-            border-bottom-right-radius: 30px 5px;
-            cursor: pointer;
-            transition: transform 0.2s;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
+            aspect-ratio: 1/1; padding: 20px 10px 10px;
+            background: var(--yellow-note); position: relative;
+            box-shadow: 3px 5px 10px rgba(0,0,0,0.1); border-bottom-right-radius: 30px 5px;
+            cursor: pointer; transition: transform 0.2s;
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
         }
 
         .sticky-note:nth-child(even) { background: var(--pink-note); transform: rotate(1deg); }
         .sticky-note:nth-child(3n) { background: var(--blue-note); transform: rotate(-2deg); }
 
         .pin {
-            width: 12px; height: 12px;
-            background: #e74c3c;
-            border-radius: 50%;
-            position: absolute;
-            top: 8px; left: 50%;
-            transform: translateX(-50%);
+            width: 12px; height: 12px; background: #e74c3c; border-radius: 50%;
+            position: absolute; top: 8px; left: 50%; transform: translateX(-50%);
             box-shadow: 1px 1px 2px rgba(0,0,0,0.3);
         }
 
-        .note-title {
-            font-family: 'Caveat', cursive;
-            font-size: 1.4rem;
-            text-align: center;
-            word-break: break-all;
-        }
+        .note-title { font-family: 'Caveat', cursive; font-size: 1.4rem; text-align: center; word-break: break-all; }
 
-        /* --- Workspace Layout --- */
         #workspace {
-            display: none;
-            flex-direction: column;
-            height: 100vh;
-            width: 100vw;
-            position: fixed;
-            top: 0; left: 0;
-            background: white;
-            z-index: 100;
+            display: none; flex-direction: column; height: 100vh; width: 100vw;
+            position: fixed; top: 0; left: 0; background: white; z-index: 100;
         }
 
-        .ws-header {
-            padding: 10px;
-            background: #eee;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 1px solid #ccc;
-        }
+        .ws-header { padding: 10px; background: #eee; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #ccc; }
+        .ws-body { display: flex; flex: 1; overflow: hidden; }
 
-        .ws-body {
-            display: flex;
-            flex: 1;
-            overflow: hidden;
-        }
-
-        /* Sidebar Mobile Toggle */
         #sidebar {
-            width: var(--sidebar-width);
-            background: #fff9e6;
-            border-right: 2px dashed #d3ccc1;
-            padding: 15px;
-            overflow-y: auto;
-            transition: transform 0.3s ease;
+            width: var(--sidebar-width); background: #fff9e6; border-right: 2px dashed #d3ccc1;
+            padding: 15px; overflow-y: auto; transition: transform 0.3s ease;
         }
 
-        /* Editor Area */
-        .editor-container {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            background: #faf9f5;
-        }
+        .editor-container { flex: 1; display: flex; flex-direction: column; background: #faf9f5; }
 
         textarea {
-            flex: 1;
-            width: 100%;
-            border: none;
-            padding: 15px;
-            font-family: 'Fira Code', monospace;
-            font-size: 14px;
-            outline: none;
-            background: transparent;
+            flex: 1; width: 100%; border: none; padding: 15px;
+            font-family: 'Fira Code', monospace; font-size: 14px; outline: none; background: transparent;
         }
 
-        /* History Panel */
-        #history {
-            width: 250px;
-            background: #fdfbf7;
-            border-left: 2px dashed #d3ccc1;
-            padding: 10px;
-            font-size: 0.8rem;
-            overflow-y: auto;
-        }
+        #history { width: 250px; background: #fdfbf7; border-left: 2px dashed #d3ccc1; padding: 10px; font-size: 0.8rem; overflow-y: auto; }
 
-        .btn {
-            padding: 8px 12px;
-            border-radius: 5px;
-            border: 1px solid #ccc;
-            background: var(--green-note);
-            font-weight: bold;
-            cursor: pointer;
-            font-size: 0.8rem;
-        }
+        .btn { padding: 8px 12px; border-radius: 5px; border: 1px solid #ccc; background: var(--green-note); font-weight: bold; cursor: pointer; font-size: 0.8rem; }
+        .status-pill { font-size: 0.7rem; padding: 2px 8px; border-radius: 10px; background: #ddd; }
 
-        .status-pill {
-            font-size: 0.7rem;
-            padding: 2px 8px;
-            border-radius: 10px;
-            background: #ddd;
-        }
-
-        /* --- Responsive Queries --- */
         @media (max-width: 768px) {
-            #sidebar {
-                position: absolute;
-                left: 0; top: 50px; bottom: 0;
-                z-index: 10;
-                transform: translateX(-100%);
-            }
+            #sidebar { position: absolute; left: 0; top: 50px; bottom: 0; z-index: 10; transform: translateX(-100%); }
             #sidebar.active { transform: translateX(0); box-shadow: 5px 0 15px rgba(0,0,0,0.2); }
-            #history { display: none; } /* Sembunyikan history di HP untuk hemat ruang */
+            #history { display: none; }
             .ws-header { font-size: 0.9rem; }
         }
 
-        .file-item {
-            padding: 8px;
-            border-bottom: 1px solid rgba(0,0,0,0.05);
-            font-size: 0.9rem;
-            display: flex;
-            justify-content: space-between;
-        }
-        .file-item:hover { background: #feeaa7; }
-        .folder-label { font-weight: bold; color: #2980b9; margin-top: 10px; display: block; }
+        .file-item { padding: 8px; border-bottom: 1px solid rgba(0,0,0,0.05); font-size: 0.9rem; display: flex; justify-content: space-between; }
+        .file-item:hover { background: #feeaa7; cursor: pointer;}
     </style>
 </head>
 <body>
@@ -220,9 +105,9 @@
 
         <div id="dashboard">
             <label class="upload-area">
-                <strong>+ Ketuk untuk Upload Folder</strong>
-                <p style="font-size: 0.8rem; color: #666;">Pilih folder addon kamu</p>
-                <input type="file" id="folderInput" webkitdirectory directory multiple hidden onchange="handleUpload(event)">
+                <strong>+ Ketuk untuk Upload file .ZIP</strong>
+                <p style="font-size: 0.8rem; color: #666;">Pilih file zip addon (support di HP)</p>
+                <input type="file" id="zipInput" accept=".zip" hidden onchange="handleZipUpload(event)">
             </label>
 
             <div id="projectGrid" class="project-grid"></div>
@@ -265,19 +150,15 @@
         let activeFile = null;
         let timer = null;
 
-        // Load Data
         window.onload = () => {
-            const saved = localStorage.getItem('adhost_db_v2');
+            const saved = localStorage.getItem('adhost_db_v3');
             if (saved) db = JSON.parse(saved);
             renderDashboard();
         };
 
         function saveToDisk() {
-            try {
-                localStorage.setItem('adhost_db_v2', JSON.stringify(db));
-            } catch (e) {
-                alert("Penyimpanan browser penuh! Hapus beberapa project lawas.");
-            }
+            try { localStorage.setItem('adhost_db_v3', JSON.stringify(db)); } 
+            catch (e) { alert("Penyimpanan browser penuh! Hapus beberapa project lawas."); }
         }
 
         function addLog(msg) {
@@ -287,28 +168,53 @@
             renderHistory();
         }
 
-        async function handleUpload(e) {
-            const files = e.target.files;
-            if (!files.length) return;
-
-            const projectName = files[0].webkitRelativePath.split('/')[0];
-            db.projects[projectName] = {};
-            db.history[projectName] = [];
-
-            for (const file of files) {
-                const path = file.webkitRelativePath;
-                // Hanya baca file teks agar hemat memori
-                if (file.size < 1000000 && (file.name.match(/\.(js|json|lang|txt|md)$/))) {
-                    const content = await file.text();
-                    db.projects[projectName][path] = content;
-                } else {
-                    db.projects[projectName][path] = "[File Non-Teks/Terlalu Besar]";
-                }
+        // --- FUNGSI EKSTRAK ZIP BARU ---
+        async function handleZipUpload(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+            if (!file.name.endsWith('.zip')) {
+                alert("Harap unggah file berformat .zip");
+                return;
             }
 
-            saveToDisk();
-            renderDashboard();
-            alert(`Project ${projectName} berhasil diimpor!`);
+            const projectName = file.name.replace('.zip', '');
+            
+            // Tampilkan loading di UI
+            e.target.parentElement.querySelector('strong').innerText = "Mengekstrak ZIP...";
+
+            try {
+                const zip = await JSZip.loadAsync(file);
+                db.projects[projectName] = {};
+                db.history[projectName] = [];
+                const promises = [];
+
+                zip.forEach(function (relativePath, zipEntry) {
+                    if (!zipEntry.dir) {
+                        // Cek file teks, sisanya biarkan agar memori HP tidak penuh
+                        if (relativePath.match(/\.(js|json|lang|txt|md|bak)$/i)) {
+                            promises.push(
+                                zipEntry.async("string").then(content => {
+                                    db.projects[projectName][relativePath] = content;
+                                })
+                            );
+                        } else {
+                            db.projects[projectName][relativePath] = "[File Non-Teks/Binari]";
+                        }
+                    }
+                });
+
+                await Promise.all(promises);
+                saveToDisk();
+                renderDashboard();
+                alert(`Project ${projectName} berhasil diimpor!`);
+                
+            } catch (err) {
+                alert("Gagal membaca file ZIP: " + err.message);
+            }
+            
+            // Kembalikan tulisan UI
+            e.target.parentElement.querySelector('strong').innerText = "+ Ketuk untuk Upload file .ZIP";
+            e.target.value = ""; 
         }
 
         function renderDashboard() {
@@ -320,7 +226,7 @@
                 card.innerHTML = `
                     <div class="pin"></div>
                     <div class="note-title" onclick="openProject('${name}')">${name}</div>
-                    <div style="margin-top:10px; color:red; font-size:0.7rem;" onclick="deleteProject('${name}')">Hapus [x]</div>
+                    <div style="margin-top:10px; color:red; font-size:0.7rem; z-index: 10;" onclick="deleteProject('${name}')">Hapus [x]</div>
                 `;
                 grid.appendChild(card);
             }
@@ -330,6 +236,8 @@
             activeProject = name;
             document.getElementById('main-view').style.display = 'none';
             document.getElementById('workspace').style.display = 'flex';
+            document.getElementById('editor').value = "";
+            document.getElementById('activeFileName').innerText = "Pilih File";
             renderFileList();
             renderHistory();
             addLog("Membuka project");
@@ -342,26 +250,20 @@
             activeFile = null;
         }
 
-        function toggleSidebar() {
-            document.getElementById('sidebar').classList.toggle('active');
-        }
+        function toggleSidebar() { document.getElementById('sidebar').classList.toggle('active'); }
 
         function renderFileList() {
             const list = document.getElementById('fileList');
             list.innerHTML = '';
             const files = db.projects[activeProject];
             
-            // Urutkan file
             Object.keys(files).sort().forEach(path => {
-                const parts = path.split('/');
-                const fileName = parts.pop();
-                const folderPath = parts.join('/');
-                
+                const fileName = path.split('/').pop();
                 const item = document.createElement('div');
                 item.className = 'file-item';
                 item.innerHTML = `
-                    <span onclick="loadFile('${path}')">📄 ${fileName}</span>
-                    <span style="color:red;" onclick="deleteFile('${path}')">×</span>
+                    <span style="flex:1; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;" onclick="loadFile('${path}')">📄 ${fileName}</span>
+                    <span style="color:red; margin-left:10px; padding: 0 5px;" onclick="deleteFile('${path}')">×</span>
                 `;
                 list.appendChild(item);
             });
@@ -376,10 +278,8 @@
             addLog(`Membuka file: ${path.split('/').pop()}`);
         }
 
-        // Auto Save Logic
         document.getElementById('editor').oninput = function() {
             if(!activeFile) return;
-            
             const indicator = document.getElementById('saveIndicator');
             indicator.innerText = "Mengetik...";
             indicator.style.background = "#ffeaa7";
@@ -407,6 +307,10 @@
                 addLog(`Menghapus file: ${path}`);
                 saveToDisk();
                 renderFileList();
+                if(activeFile === path) {
+                    document.getElementById('editor').value = "";
+                    document.getElementById('activeFileName').innerText = "Pilih File";
+                }
             }
         }
 
@@ -431,7 +335,7 @@
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.href = url;
-            a.download = `${activeProject}_AdHost.zip`;
+            a.download = `${activeProject}_Update.zip`;
             a.click();
             addLog("Mengekspor ke ZIP");
         }
