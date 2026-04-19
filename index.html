@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AdHost Addon Manager</title>
+    <title>AdHost Manager Mobile</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Caveat:wght@600&family=Fira+Code&family=Nunito:wght@400;700&display=swap');
 
@@ -14,13 +14,10 @@
             --pink-note: #ff7eb9;
             --blue-note: #7afcff;
             --green-note: #ccff90;
+            --sidebar-width: 280px;
         }
 
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
 
         body {
             background-color: var(--bg-color);
@@ -28,61 +25,53 @@
             background-size: 20px 20px;
             font-family: 'Nunito', sans-serif;
             color: var(--text-color);
-            padding: 20px;
+            overflow-x: hidden;
         }
 
+        /* --- Header --- */
         header {
+            padding: 20px;
             text-align: center;
-            margin-bottom: 30px;
         }
 
         h1 {
             font-family: 'Caveat', cursive;
-            font-size: 3rem;
+            font-size: clamp(2rem, 8vw, 3rem);
             color: #2c3e50;
-            transform: rotate(-2deg);
+            transform: rotate(-1deg);
         }
 
-        /* --- Dashboard & Sticky Notes --- */
+        /* --- Dashboard --- */
         #dashboard {
             display: flex;
-            flex-wrap: wrap;
+            flex-direction: column;
+            align-items: center;
+            padding: 10px;
             gap: 20px;
-            justify-content: center;
         }
 
-        .upload-btn-wrapper {
-            position: relative;
-            overflow: hidden;
-            display: inline-block;
-        }
-
-        .btn-upload {
-            border: 2px dashed #888;
-            color: #555;
-            background-color: white;
-            padding: 15px 30px;
-            border-radius: 10px;
-            font-weight: bold;
+        .upload-area {
+            width: 100%;
+            max-width: 400px;
+            padding: 20px;
+            border: 3px dashed #b2bec3;
+            border-radius: 15px;
+            background: white;
+            text-align: center;
             cursor: pointer;
-            font-family: 'Nunito', sans-serif;
-            transition: all 0.2s ease;
         }
 
-        .btn-upload:hover { background-color: #eee; }
-        .upload-btn-wrapper input[type=file] {
-            font-size: 100px;
-            position: absolute;
-            left: 0;
-            top: 0;
-            opacity: 0;
-            cursor: pointer;
+        .project-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+            gap: 15px;
+            width: 100%;
+            max-width: 1000px;
         }
 
         .sticky-note {
-            width: 200px;
-            height: 200px;
-            padding: 25px 15px 15px;
+            aspect-ratio: 1/1;
+            padding: 20px 10px 10px;
             background: var(--yellow-note);
             position: relative;
             box-shadow: 3px 5px 10px rgba(0,0,0,0.1);
@@ -91,96 +80,74 @@
             transition: transform 0.2s;
             display: flex;
             flex-direction: column;
-            justify-content: space-between;
+            justify-content: center;
+            align-items: center;
         }
 
-        .sticky-note:nth-child(even) { background: var(--pink-note); transform: rotate(2deg); }
-        .sticky-note:nth-child(3n) { background: var(--blue-note); transform: rotate(-3deg); }
-        .sticky-note:hover { transform: scale(1.05) translateY(-5px); z-index: 10; }
+        .sticky-note:nth-child(even) { background: var(--pink-note); transform: rotate(1deg); }
+        .sticky-note:nth-child(3n) { background: var(--blue-note); transform: rotate(-2deg); }
 
         .pin {
-            width: 15px;
-            height: 15px;
-            background-color: #ff3b30;
+            width: 12px; height: 12px;
+            background: #e74c3c;
             border-radius: 50%;
             position: absolute;
-            top: 10px;
-            left: 50%;
+            top: 8px; left: 50%;
             transform: translateX(-50%);
-            box-shadow: inset -2px -2px 4px rgba(0,0,0,0.3), 1px 2px 3px rgba(0,0,0,0.2);
+            box-shadow: 1px 1px 2px rgba(0,0,0,0.3);
         }
 
         .note-title {
             font-family: 'Caveat', cursive;
-            font-size: 1.8rem;
+            font-size: 1.4rem;
             text-align: center;
-            word-wrap: break-word;
+            word-break: break-all;
         }
 
-        .delete-project {
-            background: none;
-            border: none;
-            color: red;
-            font-weight: bold;
-            cursor: pointer;
-            align-self: flex-end;
-        }
-
-        /* --- Editor Workspace --- */
+        /* --- Workspace Layout --- */
         #workspace {
             display: none;
-            height: 85vh;
-            background: white;
-            border: 1px solid #ccc;
-            box-shadow: 5px 5px 15px rgba(0,0,0,0.05);
-            border-radius: 5px;
-            overflow: hidden;
-            display: flex;
-        }
-
-        .sidebar {
-            width: 250px;
-            background: #fff9e6;
-            border-right: 2px dashed #d3ccc1;
-            padding: 10px;
-            overflow-y: auto;
-        }
-
-        .file-tree ul { list-style: none; padding-left: 15px; }
-        .file-tree li { margin: 5px 0; cursor: pointer; font-size: 0.9rem; }
-        .file-tree li:hover { color: #d35400; font-weight: bold; }
-        .folder { font-weight: bold; color: #2980b9; }
-        .folder::before { content: '📁 '; }
-        .file::before { content: '📄 '; }
-
-        .editor-main {
-            flex: 1;
-            display: flex;
             flex-direction: column;
-            background: #fff;
+            height: 100vh;
+            width: 100vw;
+            position: fixed;
+            top: 0; left: 0;
+            background: white;
+            z-index: 100;
         }
 
-        .editor-header {
+        .ws-header {
             padding: 10px;
-            background: #f1f1f1;
-            border-bottom: 1px solid #ccc;
+            background: #eee;
             display: flex;
             justify-content: space-between;
             align-items: center;
+            border-bottom: 1px solid #ccc;
         }
 
-        .btn-action {
-            background: var(--green-note);
-            border: 1px solid #ccc;
-            padding: 5px 15px;
-            border-radius: 3px;
-            cursor: pointer;
-            font-family: 'Nunito', sans-serif;
-            font-weight: bold;
-            box-shadow: 2px 2px 0px rgba(0,0,0,0.1);
+        .ws-body {
+            display: flex;
+            flex: 1;
+            overflow: hidden;
         }
 
-        .btn-action:active { box-shadow: 0px 0px 0px; transform: translateY(2px); }
+        /* Sidebar Mobile Toggle */
+        #sidebar {
+            width: var(--sidebar-width);
+            background: #fff9e6;
+            border-right: 2px dashed #d3ccc1;
+            padding: 15px;
+            overflow-y: auto;
+            transition: transform 0.3s ease;
+        }
+
+        /* Editor Area */
+        .editor-container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            background: #faf9f5;
+        }
 
         textarea {
             flex: 1;
@@ -189,332 +156,284 @@
             padding: 15px;
             font-family: 'Fira Code', monospace;
             font-size: 14px;
-            resize: none;
             outline: none;
-            background-color: #faf9f5;
-            color: #333;
+            background: transparent;
         }
 
-        .history-panel {
-            width: 300px;
+        /* History Panel */
+        #history {
+            width: 250px;
             background: #fdfbf7;
             border-left: 2px dashed #d3ccc1;
             padding: 10px;
-            overflow-y: auto;
-            font-size: 0.85rem;
-        }
-
-        .history-panel h3 {
-            font-family: 'Caveat', cursive;
-            font-size: 1.5rem;
-            border-bottom: 1px solid #ccc;
-            margin-bottom: 10px;
-            padding-bottom: 5px;
-        }
-
-        .log-entry {
-            margin-bottom: 8px;
-            padding: 5px;
-            background: white;
-            border-left: 3px solid #f39c12;
-            box-shadow: 1px 1px 3px rgba(0,0,0,0.05);
-        }
-        
-        .auto-save-status {
             font-size: 0.8rem;
-            color: #27ae60;
-            margin-left: 10px;
-            font-style: italic;
-            opacity: 0;
-            transition: opacity 0.5s;
+            overflow-y: auto;
         }
 
+        .btn {
+            padding: 8px 12px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            background: var(--green-note);
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 0.8rem;
+        }
+
+        .status-pill {
+            font-size: 0.7rem;
+            padding: 2px 8px;
+            border-radius: 10px;
+            background: #ddd;
+        }
+
+        /* --- Responsive Queries --- */
+        @media (max-width: 768px) {
+            #sidebar {
+                position: absolute;
+                left: 0; top: 50px; bottom: 0;
+                z-index: 10;
+                transform: translateX(-100%);
+            }
+            #sidebar.active { transform: translateX(0); box-shadow: 5px 0 15px rgba(0,0,0,0.2); }
+            #history { display: none; } /* Sembunyikan history di HP untuk hemat ruang */
+            .ws-header { font-size: 0.9rem; }
+        }
+
+        .file-item {
+            padding: 8px;
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+            font-size: 0.9rem;
+            display: flex;
+            justify-content: space-between;
+        }
+        .file-item:hover { background: #feeaa7; }
+        .folder-label { font-weight: bold; color: #2980b9; margin-top: 10px; display: block; }
     </style>
 </head>
 <body>
 
-    <header>
-        <h1>Addon Manager</h1>
-    </header>
+    <div id="main-view">
+        <header>
+            <h1>Addon Manager</h1>
+        </header>
 
-    <div id="dashboard">
-        <div class="upload-btn-wrapper">
-            <button class="btn-upload">+ Upload Folder Addon</button>
-            <input type="file" id="folderInput" webkitdirectory directory multiple onchange="handleUpload(event)">
+        <div id="dashboard">
+            <label class="upload-area">
+                <strong>+ Ketuk untuk Upload Folder</strong>
+                <p style="font-size: 0.8rem; color: #666;">Pilih folder addon kamu</p>
+                <input type="file" id="folderInput" webkitdirectory directory multiple hidden onchange="handleUpload(event)">
+            </label>
+
+            <div id="projectGrid" class="project-grid"></div>
         </div>
-        <div id="projectList" style="display: flex; gap: 20px; flex-wrap: wrap; margin-left: 20px;"></div>
     </div>
 
-    <div id="workspace" style="display: none;">
-        <div class="sidebar">
-            <button class="btn-action" style="width: 100%; margin-bottom: 15px; background: #ff7eb9;" onclick="closeProject()">← Kembali</button>
-            <h3 style="font-family: 'Caveat'; font-size: 1.5rem; margin-bottom: 10px;">Structure</h3>
-            <div id="fileTree" class="file-tree"></div>
+    <div id="workspace">
+        <div class="ws-header">
+            <button class="btn" style="background: #ff7eb9;" onclick="closeProject()">←</button>
+            <div id="activeFileName" style="font-size: 0.8rem; font-weight: bold; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; max-width: 150px;">Pilih File</div>
+            <button class="btn" onclick="toggleSidebar()">📁 Menu</button>
+            <button class="btn" onclick="exportZip()">💾 ZIP</button>
         </div>
 
-        <div class="editor-main">
-            <div class="editor-header">
-                <div>
-                    <strong id="currentFileName">Pilih file untuk diedit...</strong>
-                    <span id="saveStatus" class="auto-save-status">Tersimpan!</span>
-                </div>
-                <div>
-                    <button class="btn-action" onclick="manualSave()">💾 Save Addon (ZIP)</button>
-                </div>
-            </div>
-            <textarea id="codeEditor" disabled placeholder="Isi file akan muncul di sini..."></textarea>
-        </div>
+        <div class="ws-body">
+            <aside id="sidebar">
+                <h3 style="font-family: Caveat; font-size: 1.5rem;">File Structure</h3>
+                <div id="fileList"></div>
+            </aside>
 
-        <div class="history-panel">
-            <h3>Activity History 📌</h3>
-            <div id="historyLog"></div>
+            <main class="editor-container">
+                <div style="padding: 5px; background: #eee; display: flex; justify-content: space-between;">
+                    <span id="saveIndicator" class="status-pill">Siap</span>
+                </div>
+                <textarea id="editor" placeholder="Klik file di menu untuk mulai mengedit..."></textarea>
+            </main>
+
+            <aside id="history">
+                <h3 style="font-family: Caveat; font-size: 1.2rem;">Riwayat</h3>
+                <div id="logContent"></div>
+            </aside>
         </div>
     </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 
     <script>
-        let db = {
-            projects: {},
-            history: []
-        };
-        let currentProjectName = null;
-        let currentFileEdit = null;
-        let autoSaveTimer = null;
+        let db = { projects: {}, history: {} };
+        let activeProject = null;
+        let activeFile = null;
+        let timer = null;
 
-        // Inisialisasi: Muat dari LocalStorage jika ada
+        // Load Data
         window.onload = () => {
-            const savedDb = localStorage.getItem('admud_addon_db');
-            if (savedDb) {
-                db = JSON.parse(savedDb);
-            }
+            const saved = localStorage.getItem('adhost_db_v2');
+            if (saved) db = JSON.parse(saved);
             renderDashboard();
         };
 
-        // Fungsi Simpan ke LocalStorage
-        function saveDB() {
+        function saveToDisk() {
             try {
-                localStorage.setItem('admud_addon_db', JSON.stringify(db));
+                localStorage.setItem('adhost_db_v2', JSON.stringify(db));
             } catch (e) {
-                alert("Penyimpanan penuh! LocalStorage melebihi batas (biasanya 5MB).");
+                alert("Penyimpanan browser penuh! Hapus beberapa project lawas.");
             }
         }
 
-        function getTimestamp() {
-            const now = new Date();
-            return `[${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}:${now.getSeconds().toString().padStart(2, '0')}]`;
-        }
-
-        function addLog(message) {
-            const logEntry = `${getTimestamp()} ${message}`;
-            if (!db.history[currentProjectName]) db.history[currentProjectName] = [];
-            db.history[currentProjectName].unshift(logEntry); // Tambah ke atas
-            saveDB();
+        function addLog(msg) {
+            if(!db.history[activeProject]) db.history[activeProject] = [];
+            const time = new Date().toLocaleTimeString('id-ID');
+            db.history[activeProject].unshift(`[${time}] ${msg}`);
             renderHistory();
         }
 
-        // --- UPLOAD HANDLER ---
-        async function handleUpload(event) {
-            const files = event.target.files;
-            if (files.length === 0) return;
+        async function handleUpload(e) {
+            const files = e.target.files;
+            if (!files.length) return;
 
             const projectName = files[0].webkitRelativePath.split('/')[0];
-            
-            if(db.projects[projectName]) {
-                if(!confirm(`Project ${projectName} sudah ada. Ingin menimpanya?`)) return;
-            }
-
             db.projects[projectName] = {};
             db.history[projectName] = [];
 
-            addLog(`User membuat/upload project baru: ${projectName}`);
-
-            for (let i = 0; i < files.length; i++) {
-                const file = files[i];
+            for (const file of files) {
                 const path = file.webkitRelativePath;
-                
-                // Baca file (hanya simpan text untuk file JS/JSON/lang, abaikan gambar/binari agar localstorage tidak penuh)
-                if (file.name.endsWith('.js') || file.name.endsWith('.json') || file.name.endsWith('.lang') || file.name.endsWith('.txt')) {
+                // Hanya baca file teks agar hemat memori
+                if (file.size < 1000000 && (file.name.match(/\.(js|json|lang|txt|md)$/))) {
                     const content = await file.text();
                     db.projects[projectName][path] = content;
                 } else {
-                    db.projects[projectName][path] = "[File Binari/Gambar - Tidak dapat diedit di Web]";
+                    db.projects[projectName][path] = "[File Non-Teks/Terlalu Besar]";
                 }
             }
 
-            saveDB();
+            saveToDisk();
             renderDashboard();
-            event.target.value = ""; // reset input
+            alert(`Project ${projectName} berhasil diimpor!`);
         }
 
-        // --- RENDER DASHBOARD ---
         function renderDashboard() {
-            document.getElementById('dashboard').style.display = 'flex';
-            document.getElementById('workspace').style.display = 'none';
-            const list = document.getElementById('projectList');
-            list.innerHTML = '';
-
-            for (const proj in db.projects) {
-                const note = document.createElement('div');
-                note.className = 'sticky-note';
-                note.innerHTML = `
+            const grid = document.getElementById('projectGrid');
+            grid.innerHTML = '';
+            for (const name in db.projects) {
+                const card = document.createElement('div');
+                card.className = 'sticky-note';
+                card.innerHTML = `
                     <div class="pin"></div>
-                    <div class="note-title" onclick="openProject('${proj}')">${proj}</div>
-                    <button class="delete-project" onclick="deleteProject('${proj}', event)">Hapus x</button>
+                    <div class="note-title" onclick="openProject('${name}')">${name}</div>
+                    <div style="margin-top:10px; color:red; font-size:0.7rem;" onclick="deleteProject('${name}')">Hapus [x]</div>
                 `;
-                list.appendChild(note);
+                grid.appendChild(card);
             }
         }
 
-        // --- BUKA PROJECT ---
         function openProject(name) {
-            currentProjectName = name;
-            document.getElementById('dashboard').style.display = 'none';
+            activeProject = name;
+            document.getElementById('main-view').style.display = 'none';
             document.getElementById('workspace').style.display = 'flex';
-            document.getElementById('currentFileName').innerText = "Pilih file untuk diedit...";
-            document.getElementById('codeEditor').value = "";
-            document.getElementById('codeEditor').disabled = true;
-            
-            renderFileTree();
+            renderFileList();
             renderHistory();
-            addLog(`User membuka project`);
+            addLog("Membuka project");
         }
 
         function closeProject() {
-            currentProjectName = null;
-            currentFileEdit = null;
-            renderDashboard();
+            document.getElementById('main-view').style.display = 'block';
+            document.getElementById('workspace').style.display = 'none';
+            activeProject = null;
+            activeFile = null;
         }
 
-        function deleteProject(name, event) {
-            event.stopPropagation();
-            if (confirm(`Yakin ingin menghapus seluruh project ${name}?`)) {
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('active');
+        }
+
+        function renderFileList() {
+            const list = document.getElementById('fileList');
+            list.innerHTML = '';
+            const files = db.projects[activeProject];
+            
+            // Urutkan file
+            Object.keys(files).sort().forEach(path => {
+                const parts = path.split('/');
+                const fileName = parts.pop();
+                const folderPath = parts.join('/');
+                
+                const item = document.createElement('div');
+                item.className = 'file-item';
+                item.innerHTML = `
+                    <span onclick="loadFile('${path}')">📄 ${fileName}</span>
+                    <span style="color:red;" onclick="deleteFile('${path}')">×</span>
+                `;
+                list.appendChild(item);
+            });
+        }
+
+        function loadFile(path) {
+            activeFile = path;
+            const content = db.projects[activeProject][path];
+            document.getElementById('editor').value = content;
+            document.getElementById('activeFileName').innerText = path.split('/').pop();
+            document.getElementById('sidebar').classList.remove('active');
+            addLog(`Membuka file: ${path.split('/').pop()}`);
+        }
+
+        // Auto Save Logic
+        document.getElementById('editor').oninput = function() {
+            if(!activeFile) return;
+            
+            const indicator = document.getElementById('saveIndicator');
+            indicator.innerText = "Mengetik...";
+            indicator.style.background = "#ffeaa7";
+
+            clearTimeout(timer);
+            timer = setTimeout(() => {
+                db.projects[activeProject][activeFile] = this.value;
+                saveToDisk();
+                indicator.innerText = "Tersimpan Otomatis";
+                indicator.style.background = "#ccff90";
+                addLog(`Mengedit file: ${activeFile.split('/').pop()}`);
+            }, 1000);
+        };
+
+        function renderHistory() {
+            const log = document.getElementById('logContent');
+            if(db.history[activeProject]) {
+                log.innerHTML = db.history[activeProject].map(h => `<div style="margin-bottom:5px; border-bottom:1px solid #eee;">${h}</div>`).join('');
+            }
+        }
+
+        function deleteFile(path) {
+            if(confirm("Hapus file ini?")) {
+                delete db.projects[activeProject][path];
+                addLog(`Menghapus file: ${path}`);
+                saveToDisk();
+                renderFileList();
+            }
+        }
+
+        function deleteProject(name) {
+            if(confirm(`Hapus seluruh project ${name}?`)) {
                 delete db.projects[name];
                 delete db.history[name];
-                saveDB();
+                saveToDisk();
                 renderDashboard();
             }
         }
 
-        function deleteFile(path, event) {
-            event.stopPropagation();
-            if (confirm(`Hapus file ${path}?`)) {
-                delete db.projects[currentProjectName][path];
-                addLog(`User menghapus file: ${path.split('/').pop()}`);
-                saveDB();
-                renderFileTree();
-                if (currentFileEdit === path) {
-                    document.getElementById('codeEditor').value = "";
-                    document.getElementById('codeEditor').disabled = true;
-                }
-            }
-        }
-
-        // --- RENDER FILE TREE ---
-        function renderFileTree() {
-            const treeContainer = document.getElementById('fileTree');
-            const files = db.projects[currentProjectName];
-            
-            // Konversi path rata menjadi tree (struktur berhirarki)
-            const tree = {};
-            for (const path in files) {
-                const parts = path.split('/');
-                let currentLevel = tree;
-                for (let i = 0; i < parts.length; i++) {
-                    const part = parts[i];
-                    if (i === parts.length - 1) {
-                        currentLevel[part] = path; // Ini file, simpan path lengkapnya
-                    } else {
-                        if (!currentLevel[part]) currentLevel[part] = {};
-                        currentLevel = currentLevel[part];
-                    }
-                }
-            }
-
-            function buildHTML(node) {
-                let html = '<ul>';
-                for (const key in node) {
-                    if (typeof node[key] === 'object') {
-                        // Ini Folder
-                        html += `<li><span class="folder">${key}</span>${buildHTML(node[key])}</li>`;
-                    } else {
-                        // Ini File
-                        const fullPath = node[key];
-                        html += `<li><span class="file" onclick="openFile('${fullPath}')">${key}</span> 
-                                 <span style="color:red; cursor:pointer; font-size:10px; margin-left:5px;" onclick="deleteFile('${fullPath}', event)">[x]</span></li>`;
-                    }
-                }
-                html += '</ul>';
-                return html;
-            }
-
-            treeContainer.innerHTML = buildHTML(tree[currentProjectName] || tree);
-        }
-
-        // --- EDITOR & AUTO-SAVE ---
-        function openFile(path) {
-            currentFileEdit = path;
-            const content = db.projects[currentProjectName][path];
-            const editor = document.getElementById('codeEditor');
-            
-            document.getElementById('currentFileName').innerText = path;
-            editor.value = content;
-            editor.disabled = content.includes("[File Binari"); // Disable kalau binari
-
-            addLog(`User membuka file: ${path.split('/').pop()}`);
-        }
-
-        document.getElementById('codeEditor').addEventListener('input', function() {
-            if (!currentFileEdit) return;
-
-            const status = document.getElementById('saveStatus');
-            status.innerText = "Mengetik...";
-            status.style.opacity = 1;
-            status.style.color = "#f39c12";
-
-            clearTimeout(autoSaveTimer);
-            autoSaveTimer = setTimeout(() => {
-                // Proses Auto Save ke memory
-                db.projects[currentProjectName][currentFileEdit] = this.value;
-                saveDB();
-                
-                status.innerText = "Auto-Saved!";
-                status.style.color = "#27ae60";
-                
-                addLog(`User mengedit teks pada: ${currentFileEdit.split('/').pop()}`);
-
-                setTimeout(() => { status.style.opacity = 0; }, 2000);
-            }, 1500); // Auto-save setelah berhenti mengetik 1.5 detik
-        });
-
-        // --- RENDER HISTORY ---
-        function renderHistory() {
-            const historyContainer = document.getElementById('historyLog');
-            if (!currentProjectName || !db.history[currentProjectName]) return;
-            
-            historyContainer.innerHTML = db.history[currentProjectName].map(log => 
-                `<div class="log-entry">${log}</div>`
-            ).join('');
-        }
-
-        // --- MANUAL EXPORT TO ZIP ---
-        async function manualSave() {
-            addLog(`User mengekspor project ke ZIP`);
+        async function exportZip() {
             const zip = new JSZip();
-            const files = db.projects[currentProjectName];
-
-            for (const path in files) {
-                if(!files[path].includes("[File Binari")) {
-                    zip.file(path, files[path]);
+            const project = db.projects[activeProject];
+            for (const path in project) {
+                if(!project[path].includes("[File Non-Teks]")) {
+                    zip.file(path, project[path]);
                 }
             }
-
-            zip.generateAsync({type:"blob"}).then(function(content) {
-                const link = document.createElement('a');
-                link.href = URL.createObjectURL(content);
-                link.download = `${currentProjectName}_update.zip`;
-                link.click();
-            });
+            const blob = await zip.generateAsync({type:"blob"});
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `${activeProject}_AdHost.zip`;
+            a.click();
+            addLog("Mengekspor ke ZIP");
         }
     </script>
 </body>
