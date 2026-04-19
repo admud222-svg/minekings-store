@@ -14,7 +14,7 @@
             --pink-note: #ff7eb9;
             --blue-note: #7afcff;
             --green-note: #ccff90;
-            --sidebar-width: 280px;
+            --sidebar-width: 300px;
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -71,6 +71,7 @@
         #sidebar {
             width: var(--sidebar-width); background: #fff9e6; border-right: 2px dashed #d3ccc1;
             padding: 15px; overflow-y: auto; transition: transform 0.3s ease;
+            display: flex; flex-direction: column;
         }
 
         .editor-container { flex: 1; display: flex; flex-direction: column; background: #faf9f5; }
@@ -85,15 +86,37 @@
         .btn { padding: 8px 12px; border-radius: 5px; border: 1px solid #ccc; background: var(--green-note); font-weight: bold; cursor: pointer; font-size: 0.8rem; }
         .status-pill { font-size: 0.7rem; padding: 2px 8px; border-radius: 10px; background: #ddd; }
 
+        /* --- STYLES UNTUK FILE TREE (FOLDER & FILE) --- */
+        .tree-container { flex: 1; overflow-y: auto; margin-top: 10px; }
+        ul.tree { list-style: none; padding-left: 15px; margin-top: 5px; border-left: 1px dashed #ccc;}
+        ul.tree-root { padding-left: 0; border-left: none; }
+        
+        .folder {
+            font-weight: bold; color: #2980b9; cursor: pointer; padding: 5px 0;
+            display: flex; align-items: center; font-size: 0.95rem;
+        }
+        .folder:hover { color: #1abc9c; }
+        
+        .file-item {
+            padding: 5px 0; font-size: 0.9rem; display: flex; justify-content: space-between;
+            align-items: center;
+        }
+        .file-item span.filename { cursor: pointer; flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .file-item span.filename:hover { color: #d35400; font-weight: bold; background: #feeaa7; }
+        .delete-btn { color: red; cursor: pointer; padding: 0 5px; font-weight: bold; }
+
+        .add-file-btn {
+            width: 100%; padding: 10px; background: var(--blue-note);
+            border: 1px dashed #333; border-radius: 5px; cursor: pointer;
+            font-family: 'Nunito', sans-serif; font-weight: bold; margin-bottom: 10px;
+        }
+
         @media (max-width: 768px) {
             #sidebar { position: absolute; left: 0; top: 50px; bottom: 0; z-index: 10; transform: translateX(-100%); }
             #sidebar.active { transform: translateX(0); box-shadow: 5px 0 15px rgba(0,0,0,0.2); }
             #history { display: none; }
             .ws-header { font-size: 0.9rem; }
         }
-
-        .file-item { padding: 8px; border-bottom: 1px solid rgba(0,0,0,0.05); font-size: 0.9rem; display: flex; justify-content: space-between; }
-        .file-item:hover { background: #feeaa7; cursor: pointer;}
     </style>
 </head>
 <body>
@@ -109,7 +132,6 @@
                 <p style="font-size: 0.8rem; color: #666;">Pilih file zip addon (support di HP)</p>
                 <input type="file" id="zipInput" accept=".zip" hidden onchange="handleZipUpload(event)">
             </label>
-
             <div id="projectGrid" class="project-grid"></div>
         </div>
     </div>
@@ -124,8 +146,9 @@
 
         <div class="ws-body">
             <aside id="sidebar">
-                <h3 style="font-family: Caveat; font-size: 1.5rem;">File Structure</h3>
-                <div id="fileList"></div>
+                <h3 style="font-family: Caveat; font-size: 1.5rem; margin-bottom: 10px;">Structure</h3>
+                <button class="add-file-btn" onclick="addNewFile()">➕ Tambah File/Folder Baru</button>
+                <div id="fileList" class="tree-container"></div>
             </aside>
 
             <main class="editor-container">
@@ -151,13 +174,13 @@
         let timer = null;
 
         window.onload = () => {
-            const saved = localStorage.getItem('adhost_db_v3');
+            const saved = localStorage.getItem('adhost_db_v4');
             if (saved) db = JSON.parse(saved);
             renderDashboard();
         };
 
         function saveToDisk() {
-            try { localStorage.setItem('adhost_db_v3', JSON.stringify(db)); } 
+            try { localStorage.setItem('adhost_db_v4', JSON.stringify(db)); } 
             catch (e) { alert("Penyimpanan browser penuh! Hapus beberapa project lawas."); }
         }
 
@@ -168,18 +191,12 @@
             renderHistory();
         }
 
-        // --- FUNGSI EKSTRAK ZIP BARU ---
         async function handleZipUpload(e) {
             const file = e.target.files[0];
             if (!file) return;
-            if (!file.name.endsWith('.zip')) {
-                alert("Harap unggah file berformat .zip");
-                return;
-            }
+            if (!file.name.endsWith('.zip')) { alert("Harap unggah file berformat .zip"); return; }
 
             const projectName = file.name.replace('.zip', '');
-            
-            // Tampilkan loading di UI
             e.target.parentElement.querySelector('strong').innerText = "Mengekstrak ZIP...";
 
             try {
@@ -190,7 +207,6 @@
 
                 zip.forEach(function (relativePath, zipEntry) {
                     if (!zipEntry.dir) {
-                        // Cek file teks, sisanya biarkan agar memori HP tidak penuh
                         if (relativePath.match(/\.(js|json|lang|txt|md|bak)$/i)) {
                             promises.push(
                                 zipEntry.async("string").then(content => {
@@ -207,12 +223,8 @@
                 saveToDisk();
                 renderDashboard();
                 alert(`Project ${projectName} berhasil diimpor!`);
-                
-            } catch (err) {
-                alert("Gagal membaca file ZIP: " + err.message);
-            }
+            } catch (err) { alert("Gagal membaca file ZIP: " + err.message); }
             
-            // Kembalikan tulisan UI
             e.target.parentElement.querySelector('strong').innerText = "+ Ketuk untuk Upload file .ZIP";
             e.target.value = ""; 
         }
@@ -226,7 +238,7 @@
                 card.innerHTML = `
                     <div class="pin"></div>
                     <div class="note-title" onclick="openProject('${name}')">${name}</div>
-                    <div style="margin-top:10px; color:red; font-size:0.7rem; z-index: 10;" onclick="deleteProject('${name}')">Hapus [x]</div>
+                    <div style="margin-top:10px; color:red; font-size:0.7rem; z-index: 10;" onclick="deleteProject('${name}', event)">Hapus [x]</div>
                 `;
                 grid.appendChild(card);
             }
@@ -246,27 +258,96 @@
         function closeProject() {
             document.getElementById('main-view').style.display = 'block';
             document.getElementById('workspace').style.display = 'none';
-            activeProject = null;
-            activeFile = null;
+            activeProject = null; activeFile = null;
         }
 
         function toggleSidebar() { document.getElementById('sidebar').classList.toggle('active'); }
 
+        // --- FUNGSI BARU UNTUK RENDER FOLDER (TREE) ---
         function renderFileList() {
             const list = document.getElementById('fileList');
-            list.innerHTML = '';
             const files = db.projects[activeProject];
             
-            Object.keys(files).sort().forEach(path => {
-                const fileName = path.split('/').pop();
-                const item = document.createElement('div');
-                item.className = 'file-item';
-                item.innerHTML = `
-                    <span style="flex:1; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;" onclick="loadFile('${path}')">📄 ${fileName}</span>
-                    <span style="color:red; margin-left:10px; padding: 0 5px;" onclick="deleteFile('${path}')">×</span>
-                `;
-                list.appendChild(item);
-            });
+            // Mengubah format list menjadi hirarki (Tree)
+            const tree = {};
+            for (const path in files) {
+                const parts = path.split('/');
+                let current = tree;
+                for (let i = 0; i < parts.length; i++) {
+                    const part = parts[i];
+                    if (i === parts.length - 1) {
+                        current[part] = path; // Ini file
+                    } else {
+                        current[part] = current[part] || {}; // Ini Folder
+                        current = current[part];
+                    }
+                }
+            }
+
+            // Fungsi rekursif untuk membuat HTML dari Tree
+            function buildHTML(node, isRoot = false) {
+                let html = `<ul class="tree ${isRoot ? 'tree-root' : ''}">`;
+                
+                // Urutkan: Folder di atas, file di bawah
+                const keys = Object.keys(node).sort((a, b) => {
+                    const aIsObj = typeof node[a] === 'object';
+                    const bIsObj = typeof node[b] === 'object';
+                    if(aIsObj && !bIsObj) return -1;
+                    if(!aIsObj && bIsObj) return 1;
+                    return a.localeCompare(b);
+                });
+
+                for (const key of keys) {
+                    if (typeof node[key] === 'object') {
+                        // Jika ini Folder
+                        html += `<li>
+                                    <div class="folder" onclick="toggleFolder(this)">📁 ${key}</div>
+                                    <div style="display:block;">${buildHTML(node[key])}</div>
+                                 </li>`;
+                    } else {
+                        // Jika ini File
+                        const fullPath = node[key];
+                        html += `<li>
+                                    <div class="file-item">
+                                        <span class="filename" onclick="loadFile('${fullPath}')">📄 ${key}</span>
+                                        <span class="delete-btn" onclick="deleteFile('${fullPath}')">×</span>
+                                    </div>
+                                 </li>`;
+                    }
+                }
+                html += '</ul>';
+                return html;
+            }
+
+            list.innerHTML = buildHTML(tree, true);
+        }
+
+        // Animasi buka tutup folder
+        function toggleFolder(element) {
+            const content = element.nextElementSibling;
+            content.style.display = content.style.display === "none" ? "block" : "none";
+        }
+
+        // --- FUNGSI TAMBAH FILE/FOLDER ---
+        function addNewFile() {
+            const path = prompt("Masukkan lokasi dan nama file baru.\n\nContoh untuk buat folder & file sekaligus:\nscripts/sistem_baru/index.js\n\nContoh buat file saja:\nconfig_baru.json");
+            
+            if (path) {
+                // Mencegah spasi di awal/akhir
+                const cleanPath = path.trim();
+                
+                if (db.projects[activeProject][cleanPath]) {
+                    alert("File dengan nama/lokasi tersebut sudah ada!");
+                    return;
+                }
+                
+                // Buat file kosong
+                db.projects[activeProject][cleanPath] = "// File baru dibuat\n";
+                saveToDisk();
+                renderFileList(); // Render ulang struktur folder
+                loadFile(cleanPath); // Langsung buka file-nya
+                addLog(`Menambah file baru: ${cleanPath}`);
+            }
         }
 
         function loadFile(path) {
@@ -274,7 +355,11 @@
             const content = db.projects[activeProject][path];
             document.getElementById('editor').value = content;
             document.getElementById('activeFileName').innerText = path.split('/').pop();
-            document.getElementById('sidebar').classList.remove('active');
+            
+            // Sembunyikan sidebar di HP jika memilih file
+            if(window.innerWidth <= 768) {
+                document.getElementById('sidebar').classList.remove('active');
+            }
             addLog(`Membuka file: ${path.split('/').pop()}`);
         }
 
@@ -302,7 +387,7 @@
         }
 
         function deleteFile(path) {
-            if(confirm("Hapus file ini?")) {
+            if(confirm(`Yakin ingin menghapus file:\n${path} ?`)) {
                 delete db.projects[activeProject][path];
                 addLog(`Menghapus file: ${path}`);
                 saveToDisk();
@@ -314,7 +399,8 @@
             }
         }
 
-        function deleteProject(name) {
+        function deleteProject(name, event) {
+            event.stopPropagation();
             if(confirm(`Hapus seluruh project ${name}?`)) {
                 delete db.projects[name];
                 delete db.history[name];
