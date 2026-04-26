@@ -3,119 +3,218 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Minecraft Visual Texture Scanner Ultimate</title>
+    <title>Visual Texture Scanner - Mobile Friendly</title>
     <style>
+        :root {
+            --bg-main: #121212;
+            --bg-card: #1e1e1e;
+            --bg-hover: #2c2c2c;
+            --accent: #10B981;
+            --accent-hover: #059669;
+            --text-main: #f3f4f6;
+            --text-muted: #9ca3af;
+            --border: #374151;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
         body { 
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
-            background-color: #121212; 
-            color: #ffffff; 
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; 
+            background-color: var(--bg-main); 
+            color: var(--text-main); 
             padding: 20px; 
-            margin: 0;
+            line-height: 1.5;
         }
+
         .container { 
-            max-width: 900px; 
+            max-width: 800px; 
             margin: 0 auto; 
-            background: #1e1e1e; 
-            padding: 30px; 
+            background: var(--bg-card); 
+            padding: 25px; 
             border-radius: 12px; 
-            box-shadow: 0 8px 24px rgba(0,0,0,0.8); 
+            border: 1px solid var(--border);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.5); 
         }
+
         h1 { 
             text-align: center; 
-            color: #00E676; 
-            border-bottom: 2px solid #333;
-            padding-bottom: 15px;
-            margin-top: 0;
+            color: var(--accent); 
+            font-size: 1.5rem;
+            margin-bottom: 10px;
         }
-        p { text-align: center; color: #bbb; }
+
+        p.subtitle { 
+            text-align: center; 
+            color: var(--text-muted); 
+            font-size: 0.9rem;
+            margin-bottom: 25px;
+        }
         
         .upload-area {
-            border: 2px dashed #00E676;
+            border: 2px dashed var(--accent);
             padding: 20px;
             text-align: center;
             border-radius: 8px;
-            background: #252525;
+            background: rgba(16, 185, 129, 0.05);
             margin-bottom: 20px;
         }
-        input[type="file"] { width: 100%; cursor: pointer; color: #fff; }
+
+        input[type="file"] { width: 100%; cursor: pointer; color: var(--text-main); }
         
-        .controls {
+        /* Tombol & Kontrol */
+        .controls-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .btn-group {
             display: flex;
             gap: 10px;
-            justify-content: space-between;
-            margin-bottom: 20px;
-            align-items: center;
+            flex-wrap: wrap; /* Biar turun ke bawah di HP */
         }
+
         button { 
-            background: #00E676; color: #000; border: none; 
-            padding: 10px 20px; font-size: 15px; font-weight: bold;
-            border-radius: 6px; cursor: pointer; transition: background 0.2s;
+            flex: 1;
+            background: var(--accent); 
+            color: #fff; 
+            border: none; 
+            padding: 12px 15px; 
+            font-size: 14px; 
+            font-weight: 600;
+            border-radius: 8px; 
+            cursor: pointer; 
+            transition: all 0.2s;
+            min-width: fit-content;
         }
-        button:hover { background: #00C853; }
-        button:disabled { background: #555; color: #888; cursor: not-allowed; }
+        
+        button:hover { background: var(--accent-hover); transform: translateY(-2px); }
+        button:active { transform: translateY(0); }
+        button:disabled { background: var(--border); color: #888; cursor: not-allowed; transform: none; }
+        
+        .btn-blue { background: #3B82F6; }
+        .btn-blue:hover { background: #2563EB; }
+        .btn-purple { background: #8B5CF6; }
+        .btn-purple:hover { background: #7C3AED; }
         
         #searchInput {
-            padding: 10px; border-radius: 6px; border: 1px solid #444;
-            background: #2d2d2d; color: white; width: 300px; font-size: 15px;
+            width: 100%;
+            padding: 12px; 
+            border-radius: 8px; 
+            border: 1px solid var(--border);
+            background: var(--bg-main); 
+            color: white; 
+            font-size: 14px;
         }
         
+        #statusText {
+            text-align: center; 
+            margin-bottom: 15px; 
+            color: #FBBF24; 
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        /* List Gambar & Teks */
         .list-container {
             display: flex;
             flex-direction: column;
-            gap: 10px;
+            gap: 12px;
         }
+
         .list-item {
-            display: flex; align-items: center; justify-content: space-between;
-            background: #2a2a2a; padding: 10px 15px; border-radius: 8px;
-            border: 1px solid #333; transition: transform 0.1s;
+            display: flex; 
+            align-items: center; 
+            justify-content: space-between;
+            background: var(--bg-hover); 
+            padding: 12px; 
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            gap: 15px;
         }
-        .list-item:hover { background: #333; border-color: #00E676; }
-        
+
         .item-info {
-            display: flex; align-items: center; gap: 15px; overflow: hidden;
+            display: flex; 
+            align-items: center; 
+            gap: 15px; 
+            flex: 1; /* Penting biar tombol terdorong */
+            min-width: 0; /* Penting biar teks panjang bisa dipotong */
         }
+
         .item-img {
-            width: 48px; height: 48px; object-fit: contain; 
-            background: #000; border-radius: 4px; padding: 2px;
+            width: 45px; height: 45px; 
+            object-fit: contain; 
+            background: #000; 
+            border-radius: 6px; 
+            padding: 3px;
+            flex-shrink: 0;
             image-rendering: pixelated; 
         }
+
         .item-path {
-            font-family: monospace; font-size: 14px; color: #4fc3f7;
-            word-break: break-all;
+            font-family: 'Courier New', Courier, monospace; 
+            font-size: 13px; 
+            color: #60A5FA;
+            word-break: break-all; /* Solusi anti-ketutupan tombol */
         }
         
-        .btn-copy { background: #29B6F6; color: #000; padding: 8px 15px; font-size: 13px; }
-        .btn-copy:hover { background: #03A9F4; }
+        .btn-copy-small { 
+            background: #374151; 
+            flex: none; /* Jangan biarkan tombol copy memanjang */
+            padding: 8px 12px; 
+            font-size: 12px; 
+        }
+        .btn-copy-small:hover { background: #4B5563; }
         
         .pagination {
-            display: flex; justify-content: center; align-items: center;
-            gap: 15px; margin-top: 20px;
+            display: flex; 
+            justify-content: center; 
+            align-items: center;
+            gap: 15px; 
+            margin-top: 25px;
         }
-        .page-info { font-weight: bold; color: #00E676; }
+        .page-info { font-weight: bold; color: var(--accent); font-size: 14px; }
+
+        /* TAMPILAN HP (MOBILE RESPONSIVE) */
+        @media (max-width: 600px) {
+            .list-item {
+                flex-direction: column; /* Gambar di atas, tombol di bawah */
+                align-items: flex-start;
+            }
+            .item-info { width: 100%; }
+            .btn-copy-small { width: 100%; margin-top: 5px; } /* Tombol jadi panjang di HP */
+            
+            .controls-grid { gap: 10px; }
+            h1 { font-size: 1.25rem; }
+        }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>✨ Visual Texture Scanner Ultimate</h1>
-        <p>Pilih folder <b>Resource Pack</b>. Sistem akan otomatis menangkap <b>SEMUA</b> path tekstur item tanpa peduli nama foldernya!</p>
+        <h1>✨ Visual Texture Scanner V3</h1>
+        <p class="subtitle">Pilih folder <b>Resource Pack</b>. Sistem otomatis menyesuaikan layar HP/Desktop.</p>
         
         <div class="upload-area">
             <input type="file" id="folderInput" webkitdirectory directory multiple>
         </div>
 
-        <div class="controls">
-            <button id="scanBtn" onclick="scanFiles()">🔍 Mulai Scan</button>
-            <input type="text" id="searchInput" placeholder="Cari path item..." onkeyup="filterList()" disabled>
+        <div class="controls-grid">
+            <div class="btn-group">
+                <button id="scanBtn" onclick="scanFiles()">🔍 Mulai Scan</button>
+                <button id="dlBtn" class="btn-purple" onclick="downloadTXT()" disabled>💾 Download .TXT</button>
+            </div>
+            <input type="text" id="searchInput" placeholder="Cari nama item/path..." onkeyup="filterList()" disabled>
         </div>
         
-        <div id="statusText" style="text-align: center; margin-bottom: 15px; color: #ffeb3b; font-weight: bold;"></div>
+        <div id="statusText"></div>
 
         <div class="list-container" id="listContainer">
             </div>
 
         <div class="pagination" id="pagination" style="display: none;">
             <button id="btnPrev" onclick="changePage(-1)">◀ Prev</button>
-            <span class="page-info" id="pageInfo">Halaman 1 / 1</span>
+            <span class="page-info" id="pageInfo">Hal 1 / 1</span>
             <button id="btnNext" onclick="changePage(1)">Next ▶</button>
         </div>
     </div>
@@ -131,7 +230,8 @@
             if (files.length === 0) return alert("Pilih folder Resource Pack dulu!");
 
             document.getElementById('scanBtn').disabled = true;
-            document.getElementById('statusText').innerText = "⏳ Sedang memproses data... (Mencari JSON & PNG)";
+            document.getElementById('dlBtn').disabled = true;
+            document.getElementById('statusText').innerText = "⏳ Sedang memproses data... (Mencari JSON & Gambar)";
             document.getElementById('listContainer').innerHTML = "";
             document.getElementById('pagination').style.display = "none";
             
@@ -149,9 +249,7 @@
                 } 
                 else if (name.endsWith('.png') || name.endsWith('.tga')) {
                     const match = path.match(/(textures\/.*)\.(png|tga)$/);
-                    if (match) {
-                        imageMap.set(match[1], file); 
-                    }
+                    if (match) imageMap.set(match[1], file); 
                 }
             }
 
@@ -164,7 +262,6 @@
             for (let file of jsonFiles) {
                 try {
                     const text = await file.text();
-                    // REGEX BARU: Menangkap semua yang berawalan "textures/" (bebas nama folder setelahnya)
                     const matches = text.match(/textures\/[a-zA-Z0-9_\-\/]+/gi);
                     if (matches) matches.forEach(m => textureSet.add(m.toLowerCase()));
                 } catch(e) {}
@@ -180,8 +277,9 @@
             filteredItems = [...allItems];
             
             if (allItems.length > 0) {
-                document.getElementById('statusText').innerText = `✅ Berhasil menemukan ${allItems.length} texture!`;
+                document.getElementById('statusText').innerText = `✅ Sukses! Ditemukan ${allItems.length} texture path.`;
                 document.getElementById('searchInput').disabled = false;
+                document.getElementById('dlBtn').disabled = false; // Aktifkan tombol download
                 currentPage = 1;
                 renderList();
             } else {
@@ -197,7 +295,7 @@
 
             const totalPages = Math.ceil(filteredItems.length / ITEMS_PER_PAGE);
             if (totalPages === 0) {
-                container.innerHTML = "<p>Pencarian tidak ditemukan.</p>";
+                container.innerHTML = "<p style='text-align:center; color:#888;'>Pencarian tidak ditemukan.</p>";
                 document.getElementById('pagination').style.display = "none";
                 return;
             }
@@ -216,13 +314,13 @@
                         <img src="${imgUrl}" class="item-img" alt="icon">
                         <span class="item-path">${item.path}</span>
                     </div>
-                    <button class="btn-copy" onclick="copyPath('${item.path}')">📋 Copy</button>
+                    <button class="btn-copy-small" onclick="copyPath('${item.path}')">📋 Copy</button>
                 `;
                 container.appendChild(div);
             });
 
             document.getElementById('pagination').style.display = "flex";
-            document.getElementById('pageInfo').innerText = `Halaman ${currentPage} / ${totalPages}`;
+            document.getElementById('pageInfo').innerText = `Hal ${currentPage} / ${totalPages}`;
             document.getElementById('btnPrev').disabled = currentPage === 1;
             document.getElementById('btnNext').disabled = currentPage === totalPages;
         }
@@ -249,6 +347,27 @@
             }).catch(() => {
                 alert("Gagal copy otomatis, silakan blok teks manual.");
             });
+        }
+
+        // FITUR BARU: Download .txt List
+        function downloadTXT() {
+            if (allItems.length === 0) return;
+            
+            let txtContent = "=== MINECRAFT TEXTURE PATH LIST ===\n\n";
+            allItems.forEach((item, index) => {
+                txtContent += `${index + 1}. ${item.path}\n`;
+            });
+
+            // Membuat file di memori browser lalu mendownloadnya
+            const blob = new Blob([txtContent], { type: "text/plain" });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement("a");
+            a.href = url;
+            a.download = "Daftar_Texture_Addon.txt";
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
         }
     </script>
 </body>
