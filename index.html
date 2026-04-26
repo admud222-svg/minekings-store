@@ -3,178 +3,252 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Minecraft Texture Scanner - Anti Freeze</title>
+    <title>Minecraft Visual Texture Scanner Ultimate</title>
     <style>
         body { 
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
-            background-color: #1e1e1e; 
+            background-color: #121212; 
             color: #ffffff; 
             padding: 20px; 
-            line-height: 1.6;
+            margin: 0;
         }
         .container { 
-            max-width: 800px; 
+            max-width: 900px; 
             margin: 0 auto; 
-            background: #2d2d2d; 
+            background: #1e1e1e; 
             padding: 30px; 
-            border-radius: 10px; 
-            box-shadow: 0 8px 16px rgba(0,0,0,0.5); 
+            border-radius: 12px; 
+            box-shadow: 0 8px 24px rgba(0,0,0,0.8); 
         }
         h1 { 
             text-align: center; 
-            color: #4CAF50; 
-            border-bottom: 2px solid #444;
+            color: #00E676; 
+            border-bottom: 2px solid #333;
             padding-bottom: 15px;
+            margin-top: 0;
         }
-        p { text-align: center; color: #aaaaaa; }
+        p { text-align: center; color: #bbb; }
+        
         .upload-area {
-            border: 2px dashed #4CAF50;
+            border: 2px dashed #00E676;
             padding: 20px;
             text-align: center;
             border-radius: 8px;
             background: #252525;
             margin-bottom: 20px;
         }
-        input[type="file"] { 
-            display: block; 
-            width: 100%; 
-            cursor: pointer;
-            color: #fff;
-        }
-        .btn-group {
+        input[type="file"] { width: 100%; cursor: pointer; color: #fff; }
+        
+        .controls {
             display: flex;
             gap: 10px;
-            justify-content: center;
+            justify-content: space-between;
             margin-bottom: 20px;
+            align-items: center;
         }
         button { 
-            background: #4CAF50; 
-            color: white; 
-            border: none; 
-            padding: 12px 24px; 
-            font-size: 16px; 
-            font-weight: bold;
-            border-radius: 6px; 
-            cursor: pointer; 
-            transition: background 0.3s;
+            background: #00E676; color: #000; border: none; 
+            padding: 10px 20px; font-size: 15px; font-weight: bold;
+            border-radius: 6px; cursor: pointer; transition: background 0.2s;
         }
-        button:hover { background: #45a049; }
-        button:disabled { background: #555; cursor: not-allowed; }
-        .btn-copy { background: #2196F3; }
-        .btn-copy:hover { background: #1976D2; }
+        button:hover { background: #00C853; }
+        button:disabled { background: #555; color: #888; cursor: not-allowed; }
         
-        textarea { 
-            width: 100%; 
-            height: 400px; 
-            background: #121212; 
-            color: #00ff00; 
-            border: 1px solid #444; 
-            padding: 15px; 
-            font-family: 'Courier New', Courier, monospace; 
-            font-size: 14px;
-            border-radius: 6px; 
-            resize: vertical; 
-            box-sizing: border-box;
+        #searchInput {
+            padding: 10px; border-radius: 6px; border: 1px solid #444;
+            background: #2d2d2d; color: white; width: 300px; font-size: 15px;
         }
+        
+        .list-container {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .list-item {
+            display: flex; align-items: center; justify-content: space-between;
+            background: #2a2a2a; padding: 10px 15px; border-radius: 8px;
+            border: 1px solid #333; transition: transform 0.1s;
+        }
+        .list-item:hover { background: #333; border-color: #00E676; }
+        
+        .item-info {
+            display: flex; align-items: center; gap: 15px; overflow: hidden;
+        }
+        .item-img {
+            width: 48px; height: 48px; object-fit: contain; 
+            background: #000; border-radius: 4px; padding: 2px;
+            image-rendering: pixelated; 
+        }
+        .item-path {
+            font-family: monospace; font-size: 14px; color: #4fc3f7;
+            word-break: break-all;
+        }
+        
+        .btn-copy { background: #29B6F6; color: #000; padding: 8px 15px; font-size: 13px; }
+        .btn-copy:hover { background: #03A9F4; }
+        
+        .pagination {
+            display: flex; justify-content: center; align-items: center;
+            gap: 15px; margin-top: 20px;
+        }
+        .page-info { font-weight: bold; color: #00E676; }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>📦 Texture Scanner (Anti-Freeze)</h1>
-        <p>Aman untuk ribuan file! Sistem mencicil proses agar browser tidak macet.</p>
+        <h1>✨ Visual Texture Scanner Ultimate</h1>
+        <p>Pilih folder <b>Resource Pack</b>. Sistem akan otomatis menangkap <b>SEMUA</b> path tekstur item tanpa peduli nama foldernya!</p>
         
         <div class="upload-area">
             <input type="file" id="folderInput" webkitdirectory directory multiple>
         </div>
 
-        <div class="btn-group">
-            <button id="scanBtn" onclick="scanFiles()">🔍 Mulai Scan Folder</button>
-            <button class="btn-copy" onclick="copyText()">📋 Copy Hasil</button>
+        <div class="controls">
+            <button id="scanBtn" onclick="scanFiles()">🔍 Mulai Scan</button>
+            <input type="text" id="searchInput" placeholder="Cari path item..." onkeyup="filterList()" disabled>
         </div>
         
-        <textarea id="output" readonly placeholder="List path texture akan muncul di sini secara otomatis..."></textarea>
+        <div id="statusText" style="text-align: center; margin-bottom: 15px; color: #ffeb3b; font-weight: bold;"></div>
+
+        <div class="list-container" id="listContainer">
+            </div>
+
+        <div class="pagination" id="pagination" style="display: none;">
+            <button id="btnPrev" onclick="changePage(-1)">◀ Prev</button>
+            <span class="page-info" id="pageInfo">Halaman 1 / 1</span>
+            <button id="btnNext" onclick="changePage(1)">Next ▶</button>
+        </div>
     </div>
 
     <script>
+        let allItems = [];
+        let filteredItems = [];
+        let currentPage = 1;
+        const ITEMS_PER_PAGE = 15;
+
         async function scanFiles() {
             const files = document.getElementById('folderInput').files;
-            if (files.length === 0) return alert("⚠️ Tolong pilih folder Resource Pack terlebih dahulu!");
+            if (files.length === 0) return alert("Pilih folder Resource Pack dulu!");
 
-            const output = document.getElementById('output');
-            const scanBtn = document.getElementById('scanBtn');
-            scanBtn.disabled = true; // Matikan tombol agar tidak di-spam klik
+            document.getElementById('scanBtn').disabled = true;
+            document.getElementById('statusText').innerText = "⏳ Sedang memproses data... (Mencari JSON & PNG)";
+            document.getElementById('listContainer').innerHTML = "";
+            document.getElementById('pagination').style.display = "none";
             
-            let textureSet = new Set();
             let jsonFiles = [];
+            let imageMap = new Map();
+            let textureSet = new Set();
 
-            // 1. Filter: Hanya ambil file JSON untuk mempercepat (Abaikan gambar png, audio, dll)
             for (let i = 0; i < files.length; i++) {
-                if (files[i].name.endsWith('.json')) {
-                    jsonFiles.push(files[i]);
+                const file = files[i];
+                const name = file.name.toLowerCase();
+                const path = file.webkitRelativePath.toLowerCase().replace(/\\/g, '/');
+
+                if (name === 'item_texture.json' || name === 'terrain_texture.json') {
+                    jsonFiles.push(file);
+                } 
+                else if (name.endsWith('.png') || name.endsWith('.tga')) {
+                    const match = path.match(/(textures\/.*)\.(png|tga)$/);
+                    if (match) {
+                        imageMap.set(match[1], file); 
+                    }
                 }
             }
 
             if (jsonFiles.length === 0) {
-                output.value = "❌ Tidak ada file .json yang ditemukan di dalam folder tersebut!";
-                scanBtn.disabled = false;
+                document.getElementById('statusText').innerText = "❌ Gagal! File item_texture.json tidak ditemukan.";
+                document.getElementById('scanBtn').disabled = false;
                 return;
             }
 
-            output.value = `⏳ Persiapan: Memulai scan pada ${jsonFiles.length} file JSON...\n(Mengabaikan ribuan file gambar/audio yang tidak perlu)`;
-
-            let processed = 0;
-            const batchSize = 50; // Sistem mencicil: Membaca 50 file per putaran
-
-            // 2. Proses scanning dengan sistem cicil (anti-freeze)
-            for (let i = 0; i < jsonFiles.length; i++) {
-                const file = jsonFiles[i];
+            for (let file of jsonFiles) {
                 try {
                     const text = await file.text();
-                    // Regex mencari path texture
-                    const matches = text.match(/textures\/(items|blocks)\/[a-zA-Z0-9_\-\/]+/g);
-                    if (matches) {
-                        matches.forEach(match => textureSet.add(match));
-                    }
-                } catch (e) {
-                    console.error("Gagal membaca file: " + file.name);
-                }
-
-                processed++;
-                
-                // Beri jeda/nafas untuk browser setiap 50 file agar UI tidak macet
-                if (processed % batchSize === 0 || processed === jsonFiles.length) {
-                    output.value = `⏳ Sedang memproses... (${processed} dari ${jsonFiles.length} file JSON) \nDitemukan sementara: ${textureSet.size} texture path. \n\nMohon tunggu, browser sedang bekerja...`;
-                    // Istirahat 5 milidetik untuk memberikan ruang pada RAM
-                    await new Promise(resolve => setTimeout(resolve, 5));
-                }
+                    // REGEX BARU: Menangkap semua yang berawalan "textures/" (bebas nama folder setelahnya)
+                    const matches = text.match(/textures\/[a-zA-Z0-9_\-\/]+/gi);
+                    if (matches) matches.forEach(m => textureSet.add(m.toLowerCase()));
+                } catch(e) {}
             }
 
-            // 3. Menampilkan Hasil Akhir
-            const sortedTextures = Array.from(textureSet).sort();
-            let finalString = "";
+            allItems = Array.from(textureSet).sort().map(path => {
+                return {
+                    path: path,
+                    imageFile: imageMap.get(path) || null
+                };
+            });
+
+            filteredItems = [...allItems];
             
-            if (sortedTextures.length === 0) {
-                finalString = "❌ Tidak ada texture path yang ditemukan! Pastikan ini benar-benar folder Resource Pack Addon.";
+            if (allItems.length > 0) {
+                document.getElementById('statusText').innerText = `✅ Berhasil menemukan ${allItems.length} texture!`;
+                document.getElementById('searchInput').disabled = false;
+                currentPage = 1;
+                renderList();
             } else {
-                finalString = `✅ SCAN SUKSES! Total Ditemukan: ${sortedTextures.length} Texture Paths\n`;
-                finalString += "=================================================\n\n";
-                sortedTextures.forEach((path, index) => {
-                    finalString += `${index + 1}. ${path}\n`;
-                });
+                document.getElementById('statusText').innerText = "❌ Tidak ada path tekstur yang valid di dalam JSON.";
             }
-
-            output.value = finalString;
-            scanBtn.disabled = false; // Nyalakan tombol kembali
+            
+            document.getElementById('scanBtn').disabled = false;
         }
 
-        function copyText() {
-            const output = document.getElementById('output');
-            if(output.value === "" || output.value.includes("⏳")) {
-                return alert("Tunggu proses scan selesai sebelum meng-copy!");
+        function renderList() {
+            const container = document.getElementById('listContainer');
+            container.innerHTML = "";
+
+            const totalPages = Math.ceil(filteredItems.length / ITEMS_PER_PAGE);
+            if (totalPages === 0) {
+                container.innerHTML = "<p>Pencarian tidak ditemukan.</p>";
+                document.getElementById('pagination').style.display = "none";
+                return;
             }
-            output.select();
-            document.execCommand("copy");
-            alert("✅ Hasil berhasil di-copy! Silakan paste ke obrolan AI kita.");
+
+            const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+            const endIndex = startIndex + ITEMS_PER_PAGE;
+            const currentData = filteredItems.slice(startIndex, endIndex);
+
+            currentData.forEach(item => {
+                const imgUrl = item.imageFile ? URL.createObjectURL(item.imageFile) : "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' fill='%23555' viewBox='0 0 24 24'><path d='M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z'/></svg>";
+
+                const div = document.createElement('div');
+                div.className = "list-item";
+                div.innerHTML = `
+                    <div class="item-info">
+                        <img src="${imgUrl}" class="item-img" alt="icon">
+                        <span class="item-path">${item.path}</span>
+                    </div>
+                    <button class="btn-copy" onclick="copyPath('${item.path}')">📋 Copy</button>
+                `;
+                container.appendChild(div);
+            });
+
+            document.getElementById('pagination').style.display = "flex";
+            document.getElementById('pageInfo').innerText = `Halaman ${currentPage} / ${totalPages}`;
+            document.getElementById('btnPrev').disabled = currentPage === 1;
+            document.getElementById('btnNext').disabled = currentPage === totalPages;
+        }
+
+        function changePage(direction) {
+            const totalPages = Math.ceil(filteredItems.length / ITEMS_PER_PAGE);
+            currentPage += direction;
+            if (currentPage < 1) currentPage = 1;
+            if (currentPage > totalPages) currentPage = totalPages;
+            renderList();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function filterList() {
+            const query = document.getElementById('searchInput').value.toLowerCase();
+            filteredItems = allItems.filter(item => item.path.includes(query));
+            currentPage = 1;
+            renderList();
+        }
+
+        function copyPath(text) {
+            navigator.clipboard.writeText(text).then(() => {
+                alert(`✅ Berhasil di-copy:\n${text}`);
+            }).catch(() => {
+                alert("Gagal copy otomatis, silakan blok teks manual.");
+            });
         }
     </script>
 </body>
