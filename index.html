@@ -3,455 +3,151 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AdHost Manager Mobile</title>
+    <title>Minecraft Texture Scanner</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Caveat:wght@600&family=Fira+Code&family=Nunito:wght@400;700&display=swap');
-
-        :root {
-            --bg-color: #fdfbf7;
-            --text-color: #333;
-            --yellow-note: #fff740;
-            --pink-note: #ff7eb9;
-            --blue-note: #7afcff;
-            --green-note: #ccff90;
-            --sidebar-width: 280px;
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            background-color: #1e1e1e; 
+            color: #ffffff; 
+            padding: 20px; 
+            line-height: 1.6;
         }
-
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-
-        body {
-            background-color: var(--bg-color);
-            background-image: radial-gradient(#d3ccc1 1px, transparent 1px);
-            background-size: 20px 20px;
-            font-family: 'Nunito', sans-serif;
-            color: var(--text-color);
-            overflow-x: hidden;
+        .container { 
+            max-width: 800px; 
+            margin: 0 auto; 
+            background: #2d2d2d; 
+            padding: 30px; 
+            border-radius: 10px; 
+            box-shadow: 0 8px 16px rgba(0,0,0,0.5); 
         }
-
-        header { padding: 20px; text-align: center; }
-        h1 { font-family: 'Caveat', cursive; font-size: clamp(2rem, 8vw, 3rem); color: #2c3e50; transform: rotate(-1deg); }
-
-        #dashboard { display: flex; flex-direction: column; align-items: center; padding: 10px; gap: 20px; }
-
+        h1 { 
+            text-align: center; 
+            color: #4CAF50; 
+            border-bottom: 2px solid #444;
+            padding-bottom: 15px;
+        }
+        p { text-align: center; color: #aaaaaa; }
         .upload-area {
-            width: 100%; max-width: 400px; padding: 20px;
-            border: 3px dashed #b2bec3; border-radius: 15px;
-            background: white; text-align: center; cursor: pointer;
+            border: 2px dashed #4CAF50;
+            padding: 20px;
+            text-align: center;
+            border-radius: 8px;
+            background: #252525;
+            margin-bottom: 20px;
         }
-
-        .project-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 15px; width: 100%; max-width: 1000px; }
-
-        .sticky-note {
-            aspect-ratio: 1/1; padding: 20px 10px 10px;
-            background: var(--yellow-note); position: relative;
-            box-shadow: 3px 5px 10px rgba(0,0,0,0.1); border-bottom-right-radius: 30px 5px;
-            cursor: pointer; transition: transform 0.2s;
-            display: flex; flex-direction: column; justify-content: center; align-items: center;
+        input[type="file"] { 
+            display: block; 
+            width: 100%; 
+            cursor: pointer;
+            color: #fff;
         }
-
-        .sticky-note:nth-child(even) { background: var(--pink-note); transform: rotate(1deg); }
-        .sticky-note:nth-child(3n) { background: var(--blue-note); transform: rotate(-2deg); }
-
-        .pin {
-            width: 12px; height: 12px; background: #e74c3c; border-radius: 50%;
-            position: absolute; top: 8px; left: 50%; transform: translateX(-50%);
-            box-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+        .btn-group {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin-bottom: 20px;
         }
-
-        .note-title { font-family: 'Caveat', cursive; font-size: 1.4rem; text-align: center; word-break: break-all; }
-
-        #workspace {
-            display: none; flex-direction: column; height: 100vh; width: 100vw;
-            position: fixed; top: 0; left: 0; background: white; z-index: 100;
+        button { 
+            background: #4CAF50; 
+            color: white; 
+            border: none; 
+            padding: 12px 24px; 
+            font-size: 16px; 
+            font-weight: bold;
+            border-radius: 6px; 
+            cursor: pointer; 
+            transition: background 0.3s;
         }
-
-        .ws-header { padding: 10px; background: #eee; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #ccc; gap: 5px;}
-        .ws-body { display: flex; flex: 1; overflow: hidden; position: relative; }
-
-        #sidebar {
-            width: var(--sidebar-width); background: #fff9e6; border-right: 2px dashed #d3ccc1;
-            padding: 15px; overflow-y: auto; transition: transform 0.3s ease;
-            display: flex; flex-direction: column;
-        }
-
-        .editor-container { flex: 1; display: flex; flex-direction: column; background: #faf9f5; }
-
-        textarea {
-            flex: 1; width: 100%; border: none; padding: 15px;
-            font-family: 'Fira Code', monospace; font-size: 14px; outline: none; background: transparent;
-        }
-
-        #history { 
-            width: 250px; background: #fdfbf7; border-left: 2px dashed #d3ccc1; 
-            padding: 10px; font-size: 0.8rem; overflow-y: auto; transition: transform 0.3s ease;
-        }
-
-        .btn { padding: 8px; border-radius: 5px; border: 1px solid #ccc; background: var(--green-note); font-weight: bold; cursor: pointer; font-size: 0.9rem; }
-        .status-pill { font-size: 0.7rem; padding: 2px 8px; border-radius: 10px; background: #ddd; }
-
-        .tree-container { flex: 1; overflow-y: auto; margin-top: 10px; }
-        ul.tree { list-style: none; padding-left: 15px; margin-top: 5px; border-left: 1px dashed #ccc;}
-        ul.tree-root { padding-left: 0; border-left: none; }
+        button:hover { background: #45a049; }
+        .btn-copy { background: #2196F3; }
+        .btn-copy:hover { background: #1976D2; }
         
-        .folder { font-weight: bold; color: #2980b9; cursor: pointer; padding: 5px 0; display: flex; align-items: center; font-size: 0.95rem; }
-        .folder:hover { color: #1abc9c; }
-        
-        .file-item { padding: 5px 0; font-size: 0.9rem; display: flex; justify-content: space-between; align-items: center; }
-        .file-item span.filename { cursor: pointer; flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .file-item span.filename:hover { color: #d35400; font-weight: bold; background: #feeaa7; }
-        .delete-btn { color: red; cursor: pointer; padding: 0 5px; font-weight: bold; }
-
-        .add-file-btn { width: 100%; padding: 10px; background: var(--blue-note); border: 1px dashed #333; border-radius: 5px; cursor: pointer; font-family: 'Nunito', sans-serif; font-weight: bold; margin-bottom: 10px; }
-
-        .log-entry { margin-bottom: 8px; padding-bottom: 5px; border-bottom: 1px solid #eee; }
-        .log-time { font-weight: bold; color: #e67e22; }
-
-        /* --- RESPONSIVE MOBILE TWEAKS --- */
-        @media (max-width: 768px) {
-            #sidebar { position: absolute; left: 0; top: 0; bottom: 0; z-index: 10; transform: translateX(-100%); box-shadow: 5px 0 15px rgba(0,0,0,0.2); }
-            #sidebar.active { transform: translateX(0); }
-            
-            #history { position: absolute; right: 0; top: 0; bottom: 0; z-index: 10; transform: translateX(100%); box-shadow: -5px 0 15px rgba(0,0,0,0.2); }
-            #history.active { transform: translateX(0); }
-            
-            .ws-header { font-size: 0.9rem; padding: 8px 5px; }
-            .btn { padding: 6px; font-size: 0.8rem; }
-            #activeFileName { max-width: 90px; }
+        textarea { 
+            width: 100%; 
+            height: 400px; 
+            background: #121212; 
+            color: #00ff00; 
+            border: 1px solid #444; 
+            padding: 15px; 
+            font-family: 'Courier New', Courier, monospace; 
+            font-size: 14px;
+            border-radius: 6px; 
+            resize: vertical; 
+            box-sizing: border-box;
         }
     </style>
 </head>
 <body>
-
-    <div id="main-view">
-        <header>
-            <h1>Addon Manager</h1>
-        </header>
-
-        <div id="dashboard">
-            <label class="upload-area">
-                <strong>+ Ketuk untuk Upload file .ZIP</strong>
-                <p style="font-size: 0.8rem; color: #666;">Pilih file zip addon (support di HP)</p>
-                <input type="file" id="zipInput" accept=".zip" hidden onchange="handleZipUpload(event)">
-            </label>
-            <div id="projectGrid" class="project-grid"></div>
+    <div class="container">
+        <h1>📦 Bedrock Texture Scanner</h1>
+        <p>Pilih folder <b>Resource Pack</b> kamu. Sistem pintar ini akan mencari semua file <code>.json</code> (seperti <i>item_texture.json</i>) dan mengekstrak semua Texture Path secara otomatis.</p>
+        
+        <div class="upload-area">
+            <input type="file" id="folderInput" webkitdirectory directory multiple>
         </div>
+
+        <div class="btn-group">
+            <button onclick="scanFiles()">🔍 Mulai Scan Folder</button>
+            <button class="btn-copy" onclick="copyText()">📋 Copy Hasil ke AI</button>
+        </div>
+        
+        <textarea id="output" readonly placeholder="List path texture akan muncul di sini secara otomatis..."></textarea>
     </div>
-
-    <div id="workspace">
-        <div class="ws-header">
-            <button class="btn" style="background: #ff7eb9;" onclick="closeProject()">← Back</button>
-            <button class="btn" onclick="toggleSidebar()">📁 Menu</button>
-            <div id="activeFileName" style="font-size: 0.8rem; font-weight: bold; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; text-align: center;">Pilih File</div>
-            <button class="btn" style="background: var(--yellow-note);" onclick="toggleHistory()">⏱️ History</button>
-            <button class="btn" onclick="exportZip()">💾 ZIP</button>
-        </div>
-
-        <div class="ws-body">
-            <aside id="sidebar">
-                <h3 style="font-family: Caveat; font-size: 1.5rem; margin-bottom: 10px;">Structure</h3>
-                <button class="add-file-btn" onclick="addNewFile()">➕ Tambah File/Folder</button>
-                <div id="fileList" class="tree-container"></div>
-            </aside>
-
-            <main class="editor-container">
-                <div style="padding: 5px; background: #eee; display: flex; justify-content: space-between;">
-                    <span id="saveIndicator" class="status-pill">Siap</span>
-                </div>
-                <textarea id="editor" placeholder="Klik file di menu untuk mulai mengedit..."></textarea>
-            </main>
-
-            <aside id="history">
-                <h3 style="font-family: Caveat; font-size: 1.5rem; margin-bottom: 10px;">Activity Log 📌</h3>
-                <div id="logContent"></div>
-            </aside>
-        </div>
-    </div>
-
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 
     <script>
-        let db = { projects: {}, history: {} };
-        let activeProject = null;
-        let activeFile = null;
-        let timer = null;
+        async function scanFiles() {
+            const files = document.getElementById('folderInput').files;
+            if (files.length === 0) return alert("⚠️ Tolong pilih folder Resource Pack terlebih dahulu!");
 
-        window.onload = () => {
-            const saved = localStorage.getItem('adhost_db_v5');
-            if (saved) db = JSON.parse(saved);
-            renderDashboard();
-        };
-
-        function saveToDisk() {
-            try { localStorage.setItem('adhost_db_v5', JSON.stringify(db)); } 
-            catch (e) { alert("Penyimpanan browser penuh! Hapus beberapa project lawas."); }
-        }
-
-        // --- FUNGSI HISTORY DETAIL ---
-        function addLog(actionText) {
-            if(!db.history[activeProject]) db.history[activeProject] = [];
+            const output = document.getElementById('output');
+            output.value = "⏳ Sedang melakukan scanning pada " + files.length + " file... Mohon tunggu...\n";
             
-            const now = new Date();
-            const timeStr = `${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}:${now.getSeconds().toString().padStart(2, '0')}`;
-            
-            // Format log: [Jam] User melakukan sesuatu
-            const logEntry = `<span class="log-time">[${timeStr}]</span> User ${actionText}`;
-            
-            db.history[activeProject].unshift(logEntry);
-            renderHistory();
-            saveToDisk();
-        }
+            let textureSet = new Set();
 
-        async function handleZipUpload(e) {
-            const file = e.target.files[0];
-            if (!file) return;
-            if (!file.name.endsWith('.zip')) { alert("Harap unggah file berformat .zip"); return; }
-
-            const projectName = file.name.replace('.zip', '');
-            e.target.parentElement.querySelector('strong').innerText = "Mengekstrak ZIP...";
-
-            try {
-                const zip = await JSZip.loadAsync(file);
-                db.projects[projectName] = {};
-                db.history[projectName] = [];
-                const promises = [];
-
-                zip.forEach(function (relativePath, zipEntry) {
-                    if (!zipEntry.dir) {
-                        if (relativePath.match(/\.(js|json|lang|txt|md|bak)$/i)) {
-                            promises.push(
-                                zipEntry.async("string").then(content => {
-                                    db.projects[projectName][relativePath] = content;
-                                })
-                            );
-                        } else {
-                            db.projects[projectName][relativePath] = "[File Non-Teks/Binari]";
+            for (let i = 0; i < files.length; i++) {
+                const file = files[i];
+                
+                // Hanya scan file bereksistensi JSON untuk menghindari lag
+                if (file.name.endsWith('.json')) {
+                    try {
+                        const text = await file.text();
+                        // Regex Sakti: Mencari semua teks yang memiliki format path texture Bedrock
+                        const matches = text.match(/textures\/(items|blocks)\/[a-zA-Z0-9_\-\/]+/g);
+                        
+                        if (matches) {
+                            matches.forEach(match => textureSet.add(match));
                         }
-                    }
-                });
-
-                await Promise.all(promises);
-                saveToDisk();
-                renderDashboard();
-                
-                // Set project aktif sementara untuk mencatat log awal
-                activeProject = projectName;
-                addLog(`membuat/mengunggah project baru (${projectName}.zip)`);
-                activeProject = null;
-                
-                alert(`Project ${projectName} berhasil diimpor!`);
-            } catch (err) { alert("Gagal membaca file ZIP: " + err.message); }
-            
-            e.target.parentElement.querySelector('strong').innerText = "+ Ketuk untuk Upload file .ZIP";
-            e.target.value = ""; 
-        }
-
-        function renderDashboard() {
-            const grid = document.getElementById('projectGrid');
-            grid.innerHTML = '';
-            for (const name in db.projects) {
-                const card = document.createElement('div');
-                card.className = 'sticky-note';
-                card.innerHTML = `
-                    <div class="pin"></div>
-                    <div class="note-title" onclick="openProject('${name}')">${name}</div>
-                    <div style="margin-top:10px; color:red; font-size:0.7rem; z-index: 10;" onclick="deleteProject('${name}', event)">Hapus [x]</div>
-                `;
-                grid.appendChild(card);
-            }
-        }
-
-        function openProject(name) {
-            activeProject = name;
-            document.getElementById('main-view').style.display = 'none';
-            document.getElementById('workspace').style.display = 'flex';
-            document.getElementById('editor').value = "";
-            document.getElementById('activeFileName').innerText = "Pilih File";
-            
-            // Tutup sidebar & history secara default saat dibuka
-            document.getElementById('sidebar').classList.remove('active');
-            document.getElementById('history').classList.remove('active');
-            
-            renderFileList();
-            renderHistory();
-            addLog("membuka project");
-        }
-
-        function closeProject() {
-            document.getElementById('main-view').style.display = 'block';
-            document.getElementById('workspace').style.display = 'none';
-            activeProject = null; activeFile = null;
-        }
-
-        // Toggle untuk Sidebar (Menu) dan History agar bergantian di layar HP
-        function toggleSidebar() { 
-            document.getElementById('history').classList.remove('active');
-            document.getElementById('sidebar').classList.toggle('active'); 
-        }
-        function toggleHistory() { 
-            document.getElementById('sidebar').classList.remove('active');
-            document.getElementById('history').classList.toggle('active'); 
-        }
-
-        function renderFileList() {
-            const list = document.getElementById('fileList');
-            const files = db.projects[activeProject];
-            
-            const tree = {};
-            for (const path in files) {
-                const parts = path.split('/');
-                let current = tree;
-                for (let i = 0; i < parts.length; i++) {
-                    const part = parts[i];
-                    if (i === parts.length - 1) {
-                        current[part] = path;
-                    } else {
-                        current[part] = current[part] || {};
-                        current = current[part];
+                    } catch (e) {
+                        console.error("Gagal membaca file: " + file.name);
                     }
                 }
             }
 
-            function buildHTML(node, isRoot = false) {
-                let html = `<ul class="tree ${isRoot ? 'tree-root' : ''}">`;
-                
-                const keys = Object.keys(node).sort((a, b) => {
-                    const aIsObj = typeof node[a] === 'object';
-                    const bIsObj = typeof node[b] === 'object';
-                    if(aIsObj && !bIsObj) return -1;
-                    if(!aIsObj && bIsObj) return 1;
-                    return a.localeCompare(b);
-                });
-
-                for (const key of keys) {
-                    if (typeof node[key] === 'object') {
-                        // PERBAIKAN: style="display:none;" agar folder tertutup dari awal
-                        html += `<li>
-                                    <div class="folder" onclick="toggleFolder(this)">📁 ${key}</div>
-                                    <div style="display:none;">${buildHTML(node[key])}</div>
-                                 </li>`;
-                    } else {
-                        const fullPath = node[key];
-                        html += `<li>
-                                    <div class="file-item">
-                                        <span class="filename" onclick="loadFile('${fullPath}')">📄 ${key}</span>
-                                        <span class="delete-btn" onclick="deleteFile('${fullPath}')">×</span>
-                                    </div>
-                                 </li>`;
-                    }
-                }
-                html += '</ul>';
-                return html;
-            }
-
-            list.innerHTML = buildHTML(tree, true);
-        }
-
-        function toggleFolder(element) {
-            const content = element.nextElementSibling;
-            if (content.style.display === "none") {
-                content.style.display = "block";
-                element.innerText = element.innerText.replace('📁', '📂'); // Icon berubah saat terbuka
+            // Ubah hasil dari Set ke Array agar bisa diurutkan secara alfabet
+            const sortedTextures = Array.from(textureSet).sort();
+            let finalString = "";
+            
+            if (sortedTextures.length === 0) {
+                finalString = "❌ Tidak ada texture path yang ditemukan! Pastikan kamu memilih folder Resource Pack yang benar.";
             } else {
-                content.style.display = "none";
-                element.innerText = element.innerText.replace('📂', '📁');
+                finalString = `✅ SCAN SUKSES! Total Ditemukan: ${sortedTextures.length} Texture Paths\n`;
+                finalString += "=================================================\n\n";
+                sortedTextures.forEach((path, index) => {
+                    finalString += `${index + 1}. ${path}\n`;
+                });
             }
+
+            output.value = finalString;
         }
 
-        function addNewFile() {
-            const path = prompt("Masukkan lokasi dan nama file baru.\nContoh: scripts/sistem_baru/index.js");
-            
-            if (path) {
-                const cleanPath = path.trim();
-                if (db.projects[activeProject][cleanPath]) {
-                    alert("File dengan nama/lokasi tersebut sudah ada!");
-                    return;
-                }
-                
-                db.projects[activeProject][cleanPath] = "// File baru dibuat\n";
-                saveToDisk();
-                renderFileList(); 
-                loadFile(cleanPath); 
-                addLog(`menambah file: ${cleanPath}`);
+        function copyText() {
+            const output = document.getElementById('output');
+            if(output.value === "" || output.value.includes("Sedang melakukan")) {
+                return alert("Belum ada hasil yang bisa di-copy!");
             }
-        }
-
-        function loadFile(path) {
-            activeFile = path;
-            const content = db.projects[activeProject][path];
-            document.getElementById('editor').value = content;
-            document.getElementById('activeFileName').innerText = path.split('/').pop();
-            
-            if(window.innerWidth <= 768) {
-                document.getElementById('sidebar').classList.remove('active');
-            }
-        }
-
-        document.getElementById('editor').oninput = function() {
-            if(!activeFile) return;
-            const indicator = document.getElementById('saveIndicator');
-            indicator.innerText = "Mengetik...";
-            indicator.style.background = "#ffeaa7";
-
-            clearTimeout(timer);
-            timer = setTimeout(() => {
-                db.projects[activeProject][activeFile] = this.value;
-                saveToDisk();
-                indicator.innerText = "Tersimpan Otomatis";
-                indicator.style.background = "#ccff90";
-                
-                // LOG DETAIL: Mencatat aktivitas tambah/ubah teks
-                addLog(`tambah/ubah text pada: ${activeFile.split('/').pop()}`);
-            }, 1000);
-        };
-
-        function renderHistory() {
-            const log = document.getElementById('logContent');
-            if(db.history[activeProject]) {
-                log.innerHTML = db.history[activeProject].map(h => `<div class="log-entry">${h}</div>`).join('');
-            }
-        }
-
-        function deleteFile(path) {
-            if(confirm(`Yakin ingin menghapus file:\n${path} ?`)) {
-                delete db.projects[activeProject][path];
-                
-                // LOG DETAIL: Mencatat aktivitas hapus
-                addLog(`menghapus file: ${path.split('/').pop()}`);
-                
-                saveToDisk();
-                renderFileList();
-                if(activeFile === path) {
-                    document.getElementById('editor').value = "";
-                    document.getElementById('activeFileName').innerText = "Pilih File";
-                }
-            }
-        }
-
-        function deleteProject(name, event) {
-            event.stopPropagation();
-            if(confirm(`Hapus seluruh project ${name}?`)) {
-                delete db.projects[name];
-                delete db.history[name];
-                saveToDisk();
-                renderDashboard();
-            }
-        }
-
-        async function exportZip() {
-            const zip = new JSZip();
-            const project = db.projects[activeProject];
-            for (const path in project) {
-                if(!project[path].includes("[File Non-Teks]")) {
-                    zip.file(path, project[path]);
-                }
-            }
-            const blob = await zip.generateAsync({type:"blob"});
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = `${activeProject}_Update.zip`;
-            a.click();
-            addLog(`mengekspor file ZIP`);
+            output.select();
+            document.execCommand("copy");
+            alert("✅ Hasil berhasil di-copy! Silakan paste ke obrolan AI kita.");
         }
     </script>
 </body>
