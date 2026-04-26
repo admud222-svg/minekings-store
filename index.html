@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Minecraft Texture Scanner</title>
+    <title>Minecraft Texture Scanner - Anti Freeze</title>
     <style>
         body { 
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
@@ -59,6 +59,7 @@
             transition: background 0.3s;
         }
         button:hover { background: #45a049; }
+        button:disabled { background: #555; cursor: not-allowed; }
         .btn-copy { background: #2196F3; }
         .btn-copy:hover { background: #1976D2; }
         
@@ -79,16 +80,16 @@
 </head>
 <body>
     <div class="container">
-        <h1>📦 Bedrock Texture Scanner</h1>
-        <p>Pilih folder <b>Resource Pack</b> kamu. Sistem pintar ini akan mencari semua file <code>.json</code> (seperti <i>item_texture.json</i>) dan mengekstrak semua Texture Path secara otomatis.</p>
+        <h1>📦 Texture Scanner (Anti-Freeze)</h1>
+        <p>Aman untuk ribuan file! Sistem mencicil proses agar browser tidak macet.</p>
         
         <div class="upload-area">
             <input type="file" id="folderInput" webkitdirectory directory multiple>
         </div>
 
         <div class="btn-group">
-            <button onclick="scanFiles()">🔍 Mulai Scan Folder</button>
-            <button class="btn-copy" onclick="copyText()">📋 Copy Hasil ke AI</button>
+            <button id="scanBtn" onclick="scanFiles()">🔍 Mulai Scan Folder</button>
+            <button class="btn-copy" onclick="copyText()">📋 Copy Hasil</button>
         </div>
         
         <textarea id="output" readonly placeholder="List path texture akan muncul di sini secara otomatis..."></textarea>
@@ -100,35 +101,60 @@
             if (files.length === 0) return alert("⚠️ Tolong pilih folder Resource Pack terlebih dahulu!");
 
             const output = document.getElementById('output');
-            output.value = "⏳ Sedang melakukan scanning pada " + files.length + " file... Mohon tunggu...\n";
+            const scanBtn = document.getElementById('scanBtn');
+            scanBtn.disabled = true; // Matikan tombol agar tidak di-spam klik
             
             let textureSet = new Set();
+            let jsonFiles = [];
 
+            // 1. Filter: Hanya ambil file JSON untuk mempercepat (Abaikan gambar png, audio, dll)
             for (let i = 0; i < files.length; i++) {
-                const file = files[i];
-                
-                // Hanya scan file bereksistensi JSON untuk menghindari lag
-                if (file.name.endsWith('.json')) {
-                    try {
-                        const text = await file.text();
-                        // Regex Sakti: Mencari semua teks yang memiliki format path texture Bedrock
-                        const matches = text.match(/textures\/(items|blocks)\/[a-zA-Z0-9_\-\/]+/g);
-                        
-                        if (matches) {
-                            matches.forEach(match => textureSet.add(match));
-                        }
-                    } catch (e) {
-                        console.error("Gagal membaca file: " + file.name);
-                    }
+                if (files[i].name.endsWith('.json')) {
+                    jsonFiles.push(files[i]);
                 }
             }
 
-            // Ubah hasil dari Set ke Array agar bisa diurutkan secara alfabet
+            if (jsonFiles.length === 0) {
+                output.value = "❌ Tidak ada file .json yang ditemukan di dalam folder tersebut!";
+                scanBtn.disabled = false;
+                return;
+            }
+
+            output.value = `⏳ Persiapan: Memulai scan pada ${jsonFiles.length} file JSON...\n(Mengabaikan ribuan file gambar/audio yang tidak perlu)`;
+
+            let processed = 0;
+            const batchSize = 50; // Sistem mencicil: Membaca 50 file per putaran
+
+            // 2. Proses scanning dengan sistem cicil (anti-freeze)
+            for (let i = 0; i < jsonFiles.length; i++) {
+                const file = jsonFiles[i];
+                try {
+                    const text = await file.text();
+                    // Regex mencari path texture
+                    const matches = text.match(/textures\/(items|blocks)\/[a-zA-Z0-9_\-\/]+/g);
+                    if (matches) {
+                        matches.forEach(match => textureSet.add(match));
+                    }
+                } catch (e) {
+                    console.error("Gagal membaca file: " + file.name);
+                }
+
+                processed++;
+                
+                // Beri jeda/nafas untuk browser setiap 50 file agar UI tidak macet
+                if (processed % batchSize === 0 || processed === jsonFiles.length) {
+                    output.value = `⏳ Sedang memproses... (${processed} dari ${jsonFiles.length} file JSON) \nDitemukan sementara: ${textureSet.size} texture path. \n\nMohon tunggu, browser sedang bekerja...`;
+                    // Istirahat 5 milidetik untuk memberikan ruang pada RAM
+                    await new Promise(resolve => setTimeout(resolve, 5));
+                }
+            }
+
+            // 3. Menampilkan Hasil Akhir
             const sortedTextures = Array.from(textureSet).sort();
             let finalString = "";
             
             if (sortedTextures.length === 0) {
-                finalString = "❌ Tidak ada texture path yang ditemukan! Pastikan kamu memilih folder Resource Pack yang benar.";
+                finalString = "❌ Tidak ada texture path yang ditemukan! Pastikan ini benar-benar folder Resource Pack Addon.";
             } else {
                 finalString = `✅ SCAN SUKSES! Total Ditemukan: ${sortedTextures.length} Texture Paths\n`;
                 finalString += "=================================================\n\n";
@@ -138,12 +164,13 @@
             }
 
             output.value = finalString;
+            scanBtn.disabled = false; // Nyalakan tombol kembali
         }
 
         function copyText() {
             const output = document.getElementById('output');
-            if(output.value === "" || output.value.includes("Sedang melakukan")) {
-                return alert("Belum ada hasil yang bisa di-copy!");
+            if(output.value === "" || output.value.includes("⏳")) {
+                return alert("Tunggu proses scan selesai sebelum meng-copy!");
             }
             output.select();
             document.execCommand("copy");
