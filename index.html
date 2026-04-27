@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Visual Texture Scanner - Mobile Friendly</title>
+    <title>Visual Texture Scanner - All Textures</title>
     <style>
         :root {
             --bg-main: #121212;
@@ -61,7 +61,6 @@
 
         input[type="file"] { width: 100%; cursor: pointer; color: var(--text-main); }
         
-        /* Tombol & Kontrol */
         .controls-grid {
             display: grid;
             grid-template-columns: 1fr;
@@ -72,7 +71,7 @@
         .btn-group {
             display: flex;
             gap: 10px;
-            flex-wrap: wrap; /* Biar turun ke bawah di HP */
+            flex-wrap: wrap; 
         }
 
         button { 
@@ -93,8 +92,6 @@
         button:active { transform: translateY(0); }
         button:disabled { background: var(--border); color: #888; cursor: not-allowed; transform: none; }
         
-        .btn-blue { background: #3B82F6; }
-        .btn-blue:hover { background: #2563EB; }
         .btn-purple { background: #8B5CF6; }
         .btn-purple:hover { background: #7C3AED; }
         
@@ -116,7 +113,6 @@
             font-size: 0.9rem;
         }
 
-        /* List Gambar & Teks */
         .list-container {
             display: flex;
             flex-direction: column;
@@ -138,8 +134,8 @@
             display: flex; 
             align-items: center; 
             gap: 15px; 
-            flex: 1; /* Penting biar tombol terdorong */
-            min-width: 0; /* Penting biar teks panjang bisa dipotong */
+            flex: 1; 
+            min-width: 0; 
         }
 
         .item-img {
@@ -156,12 +152,12 @@
             font-family: 'Courier New', Courier, monospace; 
             font-size: 13px; 
             color: #60A5FA;
-            word-break: break-all; /* Solusi anti-ketutupan tombol */
+            word-break: break-all; 
         }
         
         .btn-copy-small { 
             background: #374151; 
-            flex: none; /* Jangan biarkan tombol copy memanjang */
+            flex: none; 
             padding: 8px 12px; 
             font-size: 12px; 
         }
@@ -176,15 +172,10 @@
         }
         .page-info { font-weight: bold; color: var(--accent); font-size: 14px; }
 
-        /* TAMPILAN HP (MOBILE RESPONSIVE) */
         @media (max-width: 600px) {
-            .list-item {
-                flex-direction: column; /* Gambar di atas, tombol di bawah */
-                align-items: flex-start;
-            }
+            .list-item { flex-direction: column; align-items: flex-start; }
             .item-info { width: 100%; }
-            .btn-copy-small { width: 100%; margin-top: 5px; } /* Tombol jadi panjang di HP */
-            
+            .btn-copy-small { width: 100%; margin-top: 5px; } 
             .controls-grid { gap: 10px; }
             h1 { font-size: 1.25rem; }
         }
@@ -192,8 +183,8 @@
 </head>
 <body>
     <div class="container">
-        <h1>✨ Visual Texture Scanner V3</h1>
-        <p class="subtitle">Pilih folder <b>Resource Pack</b>. Sistem otomatis menyesuaikan layar HP/Desktop.</p>
+        <h1>✨ Visual Texture Scanner (All Files)</h1>
+        <p class="subtitle">Mendeteksi <b>SEMUA</b> gambar di folder textures/ (termasuk 3D, entity, UI, dll).</p>
         
         <div class="upload-area">
             <input type="file" id="folderInput" webkitdirectory directory multiple>
@@ -201,10 +192,10 @@
 
         <div class="controls-grid">
             <div class="btn-group">
-                <button id="scanBtn" onclick="scanFiles()">🔍 Mulai Scan</button>
+                <button id="scanBtn" onclick="scanFiles()">🔍 Mulai Scan Instan</button>
                 <button id="dlBtn" class="btn-purple" onclick="downloadTXT()" disabled>💾 Download .TXT</button>
             </div>
-            <input type="text" id="searchInput" placeholder="Cari nama item/path..." onkeyup="filterList()" disabled>
+            <input type="text" id="searchInput" placeholder="Cari path tekstur..." onkeyup="filterList()" disabled>
         </div>
         
         <div id="statusText"></div>
@@ -231,59 +222,42 @@
 
             document.getElementById('scanBtn').disabled = true;
             document.getElementById('dlBtn').disabled = true;
-            document.getElementById('statusText').innerText = "⏳ Sedang memproses data... (Mencari JSON & Gambar)";
+            document.getElementById('statusText').innerText = "⏳ Sedang menyisir file gambar...";
             document.getElementById('listContainer').innerHTML = "";
             document.getElementById('pagination').style.display = "none";
             
-            let jsonFiles = [];
-            let imageMap = new Map();
-            let textureSet = new Set();
+            allItems = [];
 
+            // LUPAKAN JSON! Kita scan langsung file PNG/TGA nya!
             for (let i = 0; i < files.length; i++) {
                 const file = files[i];
-                const name = file.name.toLowerCase();
                 const path = file.webkitRelativePath.toLowerCase().replace(/\\/g, '/');
 
-                if (name === 'item_texture.json' || name === 'terrain_texture.json') {
-                    jsonFiles.push(file);
-                } 
-                else if (name.endsWith('.png') || name.endsWith('.tga')) {
+                // Jika filenya berupa gambar dan ada di dalam folder 'textures'
+                if (path.includes('textures/') && (path.endsWith('.png') || path.endsWith('.tga'))) {
+                    // Ambil teks mulai dari 'textures/...' sampai sebelum '.png'
                     const match = path.match(/(textures\/.*)\.(png|tga)$/);
-                    if (match) imageMap.set(match[1], file); 
+                    if (match) {
+                        allItems.push({
+                            path: match[1], // Simpan path bersih tanpa extensi
+                            imageFile: file
+                        });
+                    }
                 }
             }
 
-            if (jsonFiles.length === 0) {
-                document.getElementById('statusText').innerText = "❌ Gagal! File item_texture.json tidak ditemukan.";
-                document.getElementById('scanBtn').disabled = false;
-                return;
-            }
-
-            for (let file of jsonFiles) {
-                try {
-                    const text = await file.text();
-                    const matches = text.match(/textures\/[a-zA-Z0-9_\-\/]+/gi);
-                    if (matches) matches.forEach(m => textureSet.add(m.toLowerCase()));
-                } catch(e) {}
-            }
-
-            allItems = Array.from(textureSet).sort().map(path => {
-                return {
-                    path: path,
-                    imageFile: imageMap.get(path) || null
-                };
-            });
-
+            // Urutkan berdasarkan Abjad (A-Z)
+            allItems.sort((a, b) => a.path.localeCompare(b.path));
             filteredItems = [...allItems];
             
             if (allItems.length > 0) {
-                document.getElementById('statusText').innerText = `✅ Sukses! Ditemukan ${allItems.length} texture path.`;
+                document.getElementById('statusText').innerText = `✅ Sukses! Ditemukan ${allItems.length} texture path (3D, Item, Block, Entity, dll).`;
                 document.getElementById('searchInput').disabled = false;
-                document.getElementById('dlBtn').disabled = false; // Aktifkan tombol download
+                document.getElementById('dlBtn').disabled = false; 
                 currentPage = 1;
                 renderList();
             } else {
-                document.getElementById('statusText').innerText = "❌ Tidak ada path tekstur yang valid di dalam JSON.";
+                document.getElementById('statusText').innerText = "❌ Tidak ada gambar yang ditemukan di folder 'textures'.";
             }
             
             document.getElementById('scanBtn').disabled = false;
@@ -305,7 +279,7 @@
             const currentData = filteredItems.slice(startIndex, endIndex);
 
             currentData.forEach(item => {
-                const imgUrl = item.imageFile ? URL.createObjectURL(item.imageFile) : "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' fill='%23555' viewBox='0 0 24 24'><path d='M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z'/></svg>";
+                const imgUrl = URL.createObjectURL(item.imageFile);
 
                 const div = document.createElement('div');
                 div.className = "list-item";
@@ -349,21 +323,19 @@
             });
         }
 
-        // FITUR BARU: Download .txt List
         function downloadTXT() {
             if (allItems.length === 0) return;
             
-            let txtContent = "=== MINECRAFT TEXTURE PATH LIST ===\n\n";
+            let txtContent = "=== MINECRAFT ALL TEXTURE PATH LIST ===\n\n";
             allItems.forEach((item, index) => {
                 txtContent += `${index + 1}. ${item.path}\n`;
             });
 
-            // Membuat file di memori browser lalu mendownloadnya
             const blob = new Blob([txtContent], { type: "text/plain" });
             const url = URL.createObjectURL(blob);
             const a = document.createElement("a");
             a.href = url;
-            a.download = "Daftar_Texture_Addon.txt";
+            a.download = "Daftar_Semua_Texture_Addon.txt";
             document.body.appendChild(a);
             a.click();
             document.body.removeChild(a);
